@@ -3,7 +3,7 @@
 
   let score = 0;
   let currentQuestionIndex = 0;
-  let categories = ['General Knowledge', 'Entertainment: Film', /* Add more categories */];
+  let categories = ['Geography', 'Science', /* Add more categories */];
   let selectedCategory = '';
  
   let questions = [];
