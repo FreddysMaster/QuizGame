@@ -1,6 +1,8 @@
 <script>
 // @ts-nocheck
-
+  import { Sound } from "svelte-sound";
+  import correctsound from "./assets/correctsound.mp3";
+  const correct_sound = new Sound(correctsound);
   let score = 0;
   let currentQuestionIndex = 0;
   let categories = ['Geography', 'Science', /* Add more categories */];
@@ -43,6 +45,7 @@
        gameOver = true;
    } else {
        score++;
+       correct_sound.play();
    }
 }
 
