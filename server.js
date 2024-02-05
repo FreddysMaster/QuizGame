@@ -7,6 +7,7 @@ const app = express();
 const port = 3000;
 
 const questions = [
+  //Geography Questions
   {
     category: 'Geography',
     question: "Which of these U.S. states does NOT border Canada?",
@@ -96,7 +97,14 @@ const questions = [
     question: "What is the oldest city in the world?",
     answers: ["Damascus", "Jericho", "Athens", "Jerusalem"],
     correctAnswer: "Damascus"
-  }
+  },
+  //Science Questions
+  {
+    category: 'Science',
+    question: " When was the idea of the atom first introduced?",
+    answers: ["1791", "1942", "450 B.C.", "1050"],
+    correctAnswer: "450 B.C."
+  },
 ];
 
 app.use(express.json());
