@@ -1,0 +1,50 @@
+{
+  "name": "quizgame",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "svelte": "^4.2.8",
+    "vite": "^5.0.8"
+  },
+  "description": "This template should help get you started developing with Svelte in Vite.",
+  "main": "svelte.config.js",
+  "dependencies": {
+    "acorn": "^8.11.3",
+    "aria-query": "^5.3.0",
+    "axobject-query": "^4.0.0",
+    "code-red": "^1.0.4",
+    "cors": "^2.8.5",
+    "css-tree": "^2.3.1",
+    "debug": "^4.3.4",
+    "deepmerge": "^4.3.1",
+    "dequal": "^2.0.3",
+    "esbuild": "^0.19.12",
+    "estree-walker": "^3.0.3",
+    "express": "^4.18.2",
+    "is-reference": "^3.0.2",
+    "kleur": "^4.1.5",
+    "locate-character": "^3.0.0",
+    "magic-string": "^0.30.6",
+    "mdn-data": "^2.0.30",
+    "ms": "^2.1.2",
+    "mysql": "^2.18.1",
+    "nanoid": "^3.3.7",
+    "periscopic": "^3.1.0",
+    "picocolors": "^1.0.0",
+    "postcss": "^8.4.33",
+    "rollup": "^4.9.6",
+    "source-map-js": "^1.0.2",
+    "svelte-hmr": "^0.15.3",
+    "vitefu": "^0.2.5"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
