@@ -1,41 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Workbench&display=swap');
 :root {
-     --primary-color: #3498db; /* Dark blue for primary elements */
-     --secondary-color: #ecf0f1; /* Light gray for secondary elements */
-     --background-color: #2c3e50; /* Dark background color */
+     --primary-color: #4082b6; /* Dark blue for primary elements */
+     --secondary-color: #001388; /* Light gray for secondary elements */
+     --background-color: #1c421c; /* Dark background color */
      --text-color: #ecf0f1; /* Light text color */
-     --highlight-color: #006ab1; /* Red for highlighting */
-     --border-color: #3498db; /* Border color */
+     --highlight-color: #ffa600e1; /* Red for highlighting */
+     --border-color: #001388; /* Border color */
      --disabled-color: #7f8c8d; /* Gray for disabled elements */
      background-color: var(--background-color);
   }
- 
+
   main {
      color: var(--text-color);
-     font-family: 'Roboto', sans-serif;
+     font-family: 'Workbench', sans-serif;
      text-align: center;
      padding: 1em;
-     margin: 0 auto;
+     margin: 0,20em,20em,20em auto;
+     display: grid;
+     justify-items: center;
+     /*border:solid var(--secondary-color) ;*/
   }
  
   .grid {
      display: grid;
      grid-template-columns: repeat(2, 1fr);
      gap: 10px;
+     min-width: 600px;
+     max-width: 1000px;
   }
  
   button {
      background: var(--primary-color);
-     color: var(--secondary-color);
+     color: var(--text-color);
+     text-shadow: 2px 0 0 var(--secondary-color), 0 -2px 0 var(--secondary-color), 0 2px 0 var(--secondary-color), -2px 0 0 var(--secondary-color);
      font-family: 'Roboto', sans-serif;
      border: solid;
-     border-width: 1px;
+     border-width: 4px;
      border-color: var(--border-color);
-     border-radius: 5px;
+     border-radius: 10px;
      text-align: left;
      font-size: larger;
      padding: 1em;
      cursor: pointer;
      transition: background 0.3s ease;
+     text-align: center;
   }
  
   button:hover {
@@ -47,5 +55,3 @@
      cursor: not-allowed;
   }
 
-
- 
