@@ -2,7 +2,9 @@
 // @ts-nocheck
   import { Sound } from "svelte-sound";
   import correctsound from "./assets/correctsound.mp3";
+  import incorrectsound from "./assets/wrongsound.mp3"
   const correct_sound = new Sound(correctsound);
+  const incorrect_sound = new Sound(incorrectsound);
   let score = 0;
   let currentQuestionIndex = 0;
   let categories = ['Geography', 'Science', /* Add more categories */];
@@ -43,9 +45,10 @@
    currentQuestionIndex++;
    if (answer !== filteredQuestions[currentQuestionIndex - 1].correctAnswer) {
        gameOver = true;
+       incorrect_sound.play();
    } else {
-       score++;
        correct_sound.play();
+       score++;
    }
 }
 

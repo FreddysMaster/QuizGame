@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
-  },
+    "preview": "vite preview",
+    "dev:both": "concurrently \"npm run dev\" \"node server.js\""
+  },  
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "concurrently": "^8.2.2",
     "svelte": "^4.2.8",
     "vite": "^5.0.8"
   },
