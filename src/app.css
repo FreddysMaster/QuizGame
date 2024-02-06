@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Workbench&display=swap');
 :root {
-     --primary-color: #4082b6; /* Dark blue for primary elements */
-     --secondary-color: #001388; /* Light gray for secondary elements */
-     --background-color: #1c421c; /* Dark background color */
+     --primary-color: #3b82f6; /* Dark blue for primary elements */
+     --secondary-color: 	#097054; /* Green for secondary elements */
+     --background-color: #e0c349; /* Yellow for Background*/
+     --hover-color: #5b98fa; /* Light blue for hover elements */
+     --highlight-color: #FF9900; /* Orange for higlighting*/
      --text-color: #ecf0f1; /* Light text color */
-     --highlight-color: #ffa600e1; /* Red for highlighting */
-     --border-color: #001388; /* Border color */
+     --border-color: #2563eb; /* Border color */
      --disabled-color: #7f8c8d; /* Gray for disabled elements */
      background-color: var(--background-color);
   }
@@ -15,7 +16,7 @@
      font-family: 'Workbench', sans-serif;
      text-align: center;
      padding: 1em;
-     margin: 0,20em,20em,20em auto;
+     margin: 0,10em,10em,10em auto;
      display: grid;
      justify-items: center;
      /*border:solid var(--secondary-color) ;*/
@@ -25,20 +26,25 @@
      display: grid;
      grid-template-columns: repeat(2, 1fr);
      gap: 10px;
-     min-width: 600px;
-     max-width: 1000px;
+     width: 45%;
+  }
+
+  .question {
+      background-color: var(--secondary-color);
+      padding: 1em;
+      border-radius: 10px;
+      width: calc(45% - 2em);
+      font-size: 1.25rem;
   }
  
   button {
      background: var(--primary-color);
      color: var(--text-color);
-     text-shadow: 2px 0 0 var(--secondary-color), 0 -2px 0 var(--secondary-color), 0 2px 0 var(--secondary-color), -2px 0 0 var(--secondary-color);
      font-family: 'Roboto', sans-serif;
      border: solid;
-     border-width: 4px;
+     border-width: .25em;
      border-color: var(--border-color);
      border-radius: 10px;
-     text-align: left;
      font-size: larger;
      padding: 1em;
      cursor: pointer;
@@ -47,7 +53,7 @@
   }
  
   button:hover {
-     background: var(--highlight-color);
+     background: var(--hover-color);
   }
  
   button:disabled {

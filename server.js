@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql';
-import axios from 'axios';
 
 const app = express();
 const port =  3000;
@@ -21,22 +20,26 @@ db.connect((err) => {
 app.use(express.json());
 app.use(cors());
 
+app.get('/api/questions', (req, res) => {
+  const sqlQuery = 'SELECT * FROM questions';
 
-app.get('/api/questions', async (req, res) => {
-  try {
-    const response = await axios.get('https://opentdb.com/api.php?amount=50&type=multiple');
-    const questions = response.data.results.map(question => ({
+  db.query(sqlQuery, (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    
+    const questions = results.map(question => ({
       category: question.category,
       question: question.question,
-      answers: [...question.incorrect_answers, question.correct_answer],
-      correctAnswer: question.correct_answer
+      answers: JSON.parse(question.answers),
+      correctAnswer: question.correctAnswer
     }));
+    
     res.json(questions);
-  } catch (error) {
-    console.error('Error fetching trivia questions:', error);
-    res.status(500).send('Internal Server Error');
-  }
+  });
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

@@ -43,16 +43,22 @@ connection.connect((error) => {
       try {
         const response = await axios.get(`https://opentdb.com/api.php?amount=15&category=${categoryId}&type=multiple`);
         const questions = response.data.results;
-
+    
         // Insert each question into the database
         const promises = questions.map(question => {
+          const answersArray = [...question.incorrect_answers, question.correct_answer];
+          const randomPosition = Math.floor(Math.random() * (answersArray.length +  1));
+    
+          // Move the correct answer to a random position in the array
+          answersArray.splice(randomPosition,  0, answersArray.pop());
+    
           const item = {
             category: question.category,
             question: sanitizeString(question.question),
-            answers: JSON.stringify([...question.incorrect_answers, question.correct_answer]),
+            answers: JSON.stringify(answersArray),
             correctAnswer: question.correct_answer
           };
-
+    
           return new Promise((resolve, reject) => {
             connection.query('INSERT INTO questions SET ?', item, (error, results) => {
               if (error) {
@@ -64,13 +70,14 @@ connection.connect((error) => {
             });
           });
         });
-
+    
         // Wait for all queries to complete
         await Promise.all(promises);
       } catch (error) {
         console.error(`Error fetching trivia questions for category ${categoryId}:`, error);
       }
     };
+    
 
     // Loop through all categories and fetch questions with a delay
     const fetchWithDelay = async (categoryIds) => {

@@ -104,6 +104,7 @@ $: if (!loading && currentQuestionIndex >= filteredQuestions.length && score ===
 
 // Function to reset the game state
 function resetGame() {
+  questions = shuffleArray(questions);
   score = 0;
   currentQuestionIndex = 0;
   gameOver = false;
@@ -128,7 +129,7 @@ function resetGame() {
   </div>
   {:else if filteredQuestions.length > 0 && currentQuestionIndex < filteredQuestions.length}
   <h2>Score: {score}</h2>
-  <h1>{filteredQuestions[currentQuestionIndex].question}</h1>
+  <h2 class="question">{filteredQuestions[currentQuestionIndex].question}</h2>
   <div class="grid">
      {#each filteredQuestions[currentQuestionIndex].answers as answer, index (answer)}
        <button on:click|preventDefault={() => handleClick(answer)}>
