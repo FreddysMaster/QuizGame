@@ -8,18 +8,24 @@
      --text-color: #ecf0f1; /* Light text color */
      --border-color: #2563eb; /* Border color */
      --disabled-color: #7f8c8d; /* Gray for disabled elements */
+     --correct-color: #3ce956;
+     --incorrect-color: #f94e4e;
      background-color: var(--background-color);
   }
 
   main {
+     font-family: 'Roboto', sans-serif;
      color: var(--text-color);
-     font-family: 'Workbench', sans-serif;
      text-align: center;
      padding: 1em;
      margin: 0,10em,10em,10em auto;
      display: grid;
      justify-items: center;
      /*border:solid var(--secondary-color) ;*/
+  }
+
+  h2{
+   font-family: 'Workbench', sans-serif;
   }
  
   .grid {
@@ -36,6 +42,14 @@
       width: calc(45% - 2em);
       font-size: 1.25rem;
   }
+
+  .answer-correct {
+   background-color: var(--correct-color);
+ }
+
+ .answer-incorrect {
+   background-color: var(--incorrect-color);
+ }
  
   button {
      background: var(--primary-color);
