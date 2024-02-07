@@ -1,47 +1,40 @@
-# Svelte + Vite
+# Quiz Game
 
-This template should help get you started developing with Svelte in Vite.
+This is a simple Quiz Game that challenges the user to answer as many questions as they can without getting any questions wrong.
 
-## Recommended IDE Setup
+## Setup
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+To setup, you have to have a MySQL server running and have npm installed your system.
 
-## Need an official Svelte framework?
+### MySQL 
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+To install MySQL, the easiest way to run it is through [xampp](https://www.apachefriends.org/download.html).  Install Xampp, run it and start the Apache and MySQL server.  You should have MySQL running now!
 
-## Technical considerations
+### npm
 
-**Why use this over SvelteKit?**
+To install npm, you need to install NodeJS [here](https://nodejs.org/en).  This will give you access to npm in the terminal.
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+### Setting up the Server
 
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+To get started with running the server, you need to get this project on your local machine or server.  You can do this by cloning this github repo using git or just download the zip under the code dropdown and unzip it.
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+#### Installing the Packages
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+Navigate to the folder that the project it stored on your local machine in your terminal and run the following command:
+```npm install```
 
-**Why include `.vscode/extensions.json`?**
+After you run the install command all the packages should be installed on your system.
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+#### Populate the Database
 
-**Why enable `checkJs` in the JS template?**
+Before you are ready to play the Quiz Game, you need to populate the SQL Database with the Questions.  You can easily do this by running *mysqlinsert.js*.  You can run this file by running the following command in the projects root directory:
+```node mysqlinsert.js```
 
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
+#### Running the Server
 
-**Why is HMR not preserving my local component state?**
+After you followed all of the previous steps above you should be able to run a local server by running the command:
+```npm run dev:both```
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/sveltejs/svelte-hmr/tree/master/packages/svelte-hmr#preservation-of-local-state).
+This will setup the server at the web address: http://localhost:5173
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```js
-// store.js
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
