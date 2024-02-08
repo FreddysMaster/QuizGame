@@ -1,5 +1,6 @@
 import mysql from 'mysql';
 import axios from 'axios';
+import {decode} from 'html-entities';
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -25,16 +26,6 @@ connection.connect((error) => {
     if (error) throw error;
     console.log("Table created or already exists.");
 
-        // Sanitize string by removing special characters
-        function sanitizeString(str) {
-          return str.replace(/(&quot;)/g, '"')
-                     .replace(/(&apos;)/g, "'")
-                     .replace(/(&lt;)/g, '<')
-                     .replace(/(&gt;)/g, '>')
-                     .replace(/(&amp;)/g, '&')
-                     .replace(/(&#039;)/g, "'");
-        }
-
     // List of category IDs to fetch questions for
     const categories = [9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32];
 
@@ -54,7 +45,7 @@ connection.connect((error) => {
     
           const item = {
             category: question.category,
-            question: sanitizeString(question.question),
+            question: decode(question.question),
             answers: JSON.stringify(answersArray),
             correctAnswer: question.correct_answer
           };
@@ -83,7 +74,7 @@ connection.connect((error) => {
     const fetchWithDelay = async (categoryIds) => {
       for (const categoryId of categoryIds) {
         await fetchAndInsertQuestions(categoryId);
-        // Wait for  5 seconds before fetching the next category
+        // Wait for 5 seconds before fetching the next category
         await new Promise(resolve => setTimeout(resolve,  5000));
       }
     };

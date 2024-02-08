@@ -27,7 +27,16 @@
   h2{
    font-family: 'Workbench', sans-serif;
   }
+
+  h3 {
+   padding-left: 1em;
+   padding-right: 1em;
+  }
  
+  .currentScore {
+   display: flex;
+  }
+
   .grid {
      display: grid;
      grid-template-columns: repeat(2, 1fr);
@@ -38,6 +47,7 @@
   .question {
       background-color: var(--secondary-color);
       padding: 1em;
+      margin-top: 0;
       border-radius: 10px;
       width: calc(45% - 2em);
       font-size: 1.25rem;

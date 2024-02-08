@@ -8,6 +8,8 @@
   const incorrect_sound = new Sound(incorrectsound);
 
   let score = 0;
+  let time = 30.00;
+  const incr = () => (time += 1)
   let currentQuestionIndex = 0;
   let gameOver = false;
   let categories = [
@@ -50,6 +52,15 @@
     }
     return array;
   };
+
+  // This interval updates every  100 milliseconds to provide subsecond precision
+  setInterval(() => {
+    time -=  0.01;
+    if (time <  0) {
+      time =  0;
+      gameOver = true;
+    }
+  },  10);
 
   // Fetch questions from the backend when the page loads
   async function fetchQuestions() {
@@ -97,7 +108,12 @@
     } else {
       correct_sound.play();
       score++;
+      time = 30;
     }
+  }
+
+  $: if (time <= 0){
+    gameOver = true;
   }
 
   // Reactive statement to check if the game is over
@@ -113,6 +129,7 @@
   function resetGame() {
     questions = shuffleArray(questions);
     score = 0;
+    time = 30;
     currentQuestionIndex = 0;
     gameOver = false;
   }
@@ -135,7 +152,10 @@
         <button on:click={resetGame}>Try Again</button>
       </div>
     {:else if filteredQuestions.length >  0 && currentQuestionIndex < filteredQuestions.length}
+    <div class="currentScore">
       <h3>Score: {score}</h3>
+      <h3>Time: {time.toFixed(2)}</h3>
+    </div>
       <h2 class="question">{filteredQuestions[currentQuestionIndex].question}</h2>
       <div class="grid">
         {#each filteredQuestions[currentQuestionIndex].answers as answer, index (answer)}
