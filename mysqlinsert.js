@@ -1,6 +1,5 @@
 import mysql from 'mysql';
-import axios from 'axios';
-import {decode} from 'html-entities';
+import { getQuestions } from "@trivia-api/fetch";
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -22,72 +21,49 @@ connection.connect((error) => {
       correctAnswer VARCHAR(255) NOT NULL
   );`;
 
-  connection.query(createTableSql, (error, results) => {
+  connection.query(createTableSql, async (error, results) => {
     if (error) throw error;
     console.log("Table created or already exists.");
 
-    // List of category IDs to fetch questions for
-    const categories = [9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32];
-
-    // Function to fetch and insert questions for a given category
-    const fetchAndInsertQuestions = async (categoryId) => {
-      try {
-        const response = await axios.get(`https://opentdb.com/api.php?amount=15&category=${categoryId}&type=multiple`);
-        const questions = response.data.results;
-    
-        // Insert each question into the database
-        const promises = questions.map(question => {
-          const answersArray = [...question.incorrect_answers, question.correct_answer];
-          const randomPosition = Math.floor(Math.random() * (answersArray.length +  1));
-    
-          // Move the correct answer to a random position in the array
-          answersArray.splice(randomPosition,  0, answersArray.pop());
-    
-          const item = {
-            category: question.category,
-            question: decode(question.question),
-            answers: JSON.stringify(answersArray),
-            correctAnswer: question.correct_answer
-          };
-    
-          return new Promise((resolve, reject) => {
-            connection.query('INSERT INTO questions SET ?', item, (error, results) => {
-              if (error) {
-                reject(error);
-              } else {
-                console.log(`Inserted record for ${item.question}`);
-                resolve();
-              }
-            });
-          });
-        });
-    
-        // Wait for all queries to complete
-        await Promise.all(promises);
-      } catch (error) {
-        console.error(`Error fetching trivia questions for category ${categoryId}:`, error);
+    try {
+      // Loop 10 times to fetch and insert questions
+      for (let i = 0; i < 10; i++) {
+        await insertQuestions();
       }
-    };
-    
-
-    // Loop through all categories and fetch questions with a delay
-    const fetchWithDelay = async (categoryIds) => {
-      for (const categoryId of categoryIds) {
-        await fetchAndInsertQuestions(categoryId);
-        // Wait for 5 seconds before fetching the next category
-        await new Promise(resolve => setTimeout(resolve,  5000));
-      }
-    };
-
-    // Start fetching questions with a delay
-    fetchWithDelay(categories)
-      .then(() => {
-        console.log("All records inserted successfully.");
-        connection.end();
-      })
-      .catch((error) => {
-        console.error("An error occurred during query execution:", error);
-        connection.end();
-      });
+    } catch (error) {
+      console.error(`Error fetching and inserting trivia questions:`, error);
+    }
   });
 });
+
+async function insertQuestions() {
+  try {
+    const questions = await getQuestions({ limit: 50 });
+    // Insert each question into the database
+    questions.forEach(question => {
+      const { category, question: qObject, correctAnswer, incorrectAnswers } = question;
+      const questionText = qObject.text; // Extract question text from the object
+      const answers = JSON.stringify([...incorrectAnswers, correctAnswer]);
+      const randomPosition = Math.floor(Math.random() * (incorrectAnswers.length + 1));
+      const answersArray = JSON.parse(answers);
+      answersArray.splice(randomPosition, 0, answersArray.pop());
+
+      const item = {
+        category: category,
+        question: questionText,
+        answers: JSON.stringify(answersArray),
+        correctAnswer: correctAnswer
+      };
+
+      connection.query('INSERT INTO questions SET ?', item, (error, results) => {
+        if (error) {
+          console.error(`Error inserting question into database:`, error);
+        } else {
+          console.log(`Inserted question: ${questionText}`);
+        }
+      });
+    });
+  } catch (error) {
+    throw error; // Propagate error for better error handling
+  }
+}

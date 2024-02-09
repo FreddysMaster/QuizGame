@@ -3,46 +3,20 @@
   import { Sound } from "svelte-sound";
   import correctsound from "./assets/correctsound.mp3";
   import incorrectsound from "./assets/wrongsound.mp3";
+  import { onMount } from "svelte";
+  import { started } from "./store.js";
+  import StartScreen from "./StartScreen.svelte";
 
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);
 
   let score = 0;
-  let time = 30.00;
-  const incr = () => (time += 1)
+  let time = 20.0;
+  const incr = () => (time += 1);
   let currentQuestionIndex = 0;
   let gameOver = false;
-  let categories = [
-    'General Knowledge',
-    'Entertainment: Books',
-    'Entertainment: Film',
-    'Entertainment: Music',
-    'Entertainment: Musicals &amp; Theatres',
-    'Entertainment: Television',
-    'Entertainment: Video Games',
-    'Entertainment: Board Games',
-    'Science &amp; Nature',
-    'Science: Computers',
-    'Science: Mathematics',
-    'Mythology',
-    'Sports',
-    'Geography',
-    'History',
-    'Politics',
-    'Art',
-    'Celebrities',
-    'Animals',
-    'Vehicles',
-    'Entertainment: Comics',
-    'Science: Gadgets',
-    'Entertainment: Japanese Anime &amp; Manga',
-    'Entertainment: Cartoon &amp; Animations'
-  ];
-  let selectedCategory = "";
   let questions = [];
   let loading = true;
-  let filteredQuestions = [];
-  let selectedAnswers = {};
 
   // Function to shuffle an array
   const shuffleArray = (array) => {
@@ -54,30 +28,23 @@
   };
 
   // This interval updates every  100 milliseconds to provide subsecond precision
-  setInterval(() => {
-    time -=  0.01;
-    if (time <  0) {
-      time =  0;
-      gameOver = true;
-    }
-  },  10);
+  onMount(() => {
+    setInterval(() => {
+      time -= 0.01;
+      if (time < 0) {
+        time = 0;
+        gameOver = true;
+      }
+    }, 10);
+    fetchQuestions();
+  });
 
   // Fetch questions from the backend when the page loads
   async function fetchQuestions() {
     try {
-      let allQuestions = [];
-      // Fetch questions for random categories
-      for (let i = 0; i < categories.length; i++) {
-        const randomCategory =
-          categories[Math.floor(Math.random() * categories.length)];
-        const response = await fetch(
-          `http://localhost:3000/api/questions?category=${randomCategory}`,
-        );
-        const categoryQuestions = await response.json();
-        allQuestions = [...allQuestions, ...categoryQuestions];
-      }
-      // Shuffle the questions
-      questions = shuffleArray(allQuestions);
+      const response = await fetch(`http://localhost:3000/api/questions`);
+      questions = await response.json();
+      questions = shuffleArray(questions);
     } catch (error) {
       console.error("Error fetching questions:", error);
     } finally {
@@ -86,42 +53,26 @@
   }
 
   // Call fetchQuestions when the DOM content is loaded
-  document.addEventListener("DOMContentLoaded", fetchQuestions);
-
-  // Reactive statement to filter questions based on selected category
-  $: {
-    filteredQuestions = questions.filter(
-      (q) => !selectedCategory || q.category === selectedCategory,
-    );
-  }
-
-  function handleCategoryChange(event) {
-    selectedCategory = event.target.value;
-    currentQuestionIndex = 0;
-  }
+  onMount(fetchQuestions);
 
   function handleClick(answer) {
-    currentQuestionIndex++;
-    if (answer !== filteredQuestions[currentQuestionIndex - 1].correctAnswer) {
-      gameOver = true;
-      incorrect_sound.play();
-    } else {
+    if (answer === questions[currentQuestionIndex].correctAnswer) {
       correct_sound.play();
       score++;
       time = 30;
+    } else {
+      gameOver = true;
+      incorrect_sound.play();
     }
+    currentQuestionIndex++;
   }
 
-  $: if (time <= 0){
+  $: if (time <= 0) {
     gameOver = true;
   }
 
   // Reactive statement to check if the game is over
-  $: if (
-    !loading &&
-    currentQuestionIndex >= filteredQuestions.length &&
-    score === 0
-  ) {
+  $: if (!loading && currentQuestionIndex >= questions.length && score === 0) {
     gameOver = true;
   }
 
@@ -129,44 +80,39 @@
   function resetGame() {
     questions = shuffleArray(questions);
     score = 0;
-    time = 30;
+    time = 20;
     currentQuestionIndex = 0;
     gameOver = false;
   }
 </script>
 
 <main>
-  <!-- Category Selection Section -->
-    <select bind:value={selectedCategory} on:change={handleCategoryChange}>
-      <option value="">All Categories</option>
-      {#each categories as category}
-        <option value={category}>{category}</option>
-      {/each}
-    </select>
-
-  <!-- Game Interface Section -->
+  {#if $started}
+    <!-- Game Interface Section -->
     {#if gameOver}
       <div class="game-over">
         <h2>Game Over!</h2>
-        <p>You got {score} question(s) right.</p>
+        <p>You got {score} {score === 1 ? "question" : "questions"} right.</p>
         <button on:click={resetGame}>Try Again</button>
       </div>
-    {:else if filteredQuestions.length >  0 && currentQuestionIndex < filteredQuestions.length}
-    <div class="currentScore">
-      <h3>Score: {score}</h3>
-      <h3>Time: {time.toFixed(2)}</h3>
-    </div>
-      <h2 class="question">{filteredQuestions[currentQuestionIndex].question}</h2>
+    {:else if questions.length > 0 && currentQuestionIndex < questions.length}
+      <div class="currentScore">
+        <h3>Score: {score}</h3>
+        <h3>Time: {time.toFixed(2)}</h3>
+      </div>
+      <h2 class="question">{questions[currentQuestionIndex].question}</h2>
       <div class="grid">
-        {#each filteredQuestions[currentQuestionIndex].answers as answer, index (answer)}
+        {#each questions[currentQuestionIndex].answers as answer, index (answer)}
           <button on:click|preventDefault={() => handleClick(answer)}>
-            <span class="answer-label">{`${String.fromCharCode(65 + index)}. `}</span>{answer}
+            <span class="answer-label"
+              >{`${String.fromCharCode(65 + index)}. `}</span
+            >{answer}
           </button>
         {/each}
       </div>
-    {:else}
-      <h2>Congrats! You answered all our questions!</h2>
-      <h2>Score: {score}</h2>
-      <button on:click={resetGame}>Play Again</button>
     {/if}
+  {/if}
+  {#if !$started}
+    <StartScreen />
+  {/if}
 </main>
