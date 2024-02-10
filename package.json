@@ -47,6 +47,8 @@
     "picocolors": "^1.0.0",
     "postcss": "^8.4.33",
     "rollup": "^4.9.6",
+    "sass": "^1.70.0",
+    "smodale": "^1.0.5",
     "source-map-js": "^1.0.2",
     "svelte-hmr": "^0.15.3",
     "svelte-sound": "^0.6.0",

@@ -116,3 +116,63 @@
     <StartScreen />
   {/if}
 </main>
+
+<style>
+  :root {
+    background-color: var(--background-color);
+  }
+
+  h2{
+   font-family: 'Workbench', sans-serif;
+   color: var(--button-text-color)
+  }
+
+  h3 {
+   padding-left: 1em;
+   padding-right: 1em;
+  }
+ 
+  .currentScore {
+   display: flex;
+  }
+
+  .grid {
+     display: grid;
+     grid-template-columns: repeat(2, 1fr);
+     gap: 10px;
+     width: 45%;
+  }
+
+  .question {
+      background-color: var(--secondary-color);
+      padding: 1em;
+      margin-top: 0;
+      border-radius: 10px;
+      width: calc(45% - 2em);
+      font-size: 1.25rem;
+  }
+ 
+  button {
+     background: var(--primary-color);
+     color: var(--button-text-color);
+     font-family: 'Roboto', sans-serif;
+     border: solid;
+     border-width: .25em;
+     border-color: var(--border-color);
+     border-radius: 10px;
+     font-size: larger;
+     padding: 1em;
+     cursor: pointer;
+     transition: background 0.3s ease;
+     text-align: center;
+  }
+ 
+  button:hover {
+     background: var(--hover-color);
+  }
+ 
+  button:disabled {
+     background: var(--disabled-color);
+     cursor: not-allowed;
+  }
+</style>
