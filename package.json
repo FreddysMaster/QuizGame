@@ -10,15 +10,19 @@
     "dev:both": "concurrently \"npm run dev\" \"node server.js\""
   },
   "devDependencies": {
+    "@iconify/svelte": "^3.1.6",
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
     "concurrently": "^8.2.2",
     "svelte": "^4.2.8",
+    "svelte-fa": "^4.0.2",
     "vite": "^5.0.8"
   },
   "description": "This template should help get you started developing with Svelte in Vite.",
   "main": "svelte.config.js",
   "dependencies": {
-    "@trivia-api/fetch": "^1.37.0",
+    "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@trivia-api/fetch": "^1.12.0",
     "acorn": "^8.11.3",
     "aria-query": "^5.3.0",
     "axios": "^1.6.7",

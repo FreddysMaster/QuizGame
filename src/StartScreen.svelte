@@ -1,5 +1,6 @@
 <script>
   import { started } from "./store.js";
+  import Icon from '@iconify/svelte';
 
   let categories = [
     "history",
@@ -13,6 +14,18 @@
     "food_and_drink",
     "general_knowledge",
   ];
+  let categoriesIcons = {
+    "history": "mdi:book-open-page-variant",
+    "film_and_tv": "mdi:video-film",
+    "society_and_culture": "mdi:people",
+    "geography": "mdi:globe",
+    "arts_and_literature": "mdi:art",
+    "science": "ic:round-science",
+    "music": "mdi:music",
+    "sport_and_leisure": "mdi:soccer",
+    "food_and_drink": "mdi:food",
+    "general_knowledge": "mdi:dice-6",
+  }
   let displayNames = {
   "history": "History",
   "film_and_tv": "Film & TV",
@@ -26,14 +39,16 @@
   "general_knowledge": "General Knowledge",
 };
   let colors = [
-    "#e6c642", // Yellow
+    "#fcd01e", // Yellow
     "#f94e4e", // Red
     "#685af5", // Purple
     "#3ce976", // Green
     "#307de7", // Blue
     "#a656fd", // Violet
     "#e857ed", // Pink
-    "#56cfef"  // Light Blue
+    "#56cfef", // Light Blue
+    "#4b0082", // Indigo
+    "#ee3f73"  // Pink
   ]
   let selectedCategories = [...categories];
   let currentQuestionIndex = 0;
@@ -76,11 +91,11 @@
       {#each categories as category}
       <button
       value={category}
-      style="background: {selectedCategories.includes(category) ? categoryColors[category] : '#7f8c8d'};"
+      style="background: {selectedCategories.includes(category) ? categoryColors[category] : '#7f8c8d'}; outline:.1em solid {categoryColors[category]};"
       on:click={handleCategoryChange}
       class="category-button selected"
       >
-      {displayNames[category]}
+      <Icon icon="{categoriesIcons[category]}" width="2em" height="2em"/><br>{displayNames[category]}
       </button>
       {/each}
     </div>
@@ -106,8 +121,8 @@
   .stack{
    display: grid;
    grid-template-columns: repeat(5, 1fr);
-   column-gap: 10px;
-   row-gap: 1em;
+   column-gap: 1em;
+   row-gap: 1.5em;
   }
 
   .categories-label {
@@ -116,30 +131,27 @@
   }
 
   .category-button{
-   border: solid;
-   border-width: .25em;
-   border-color: var(--border-color);;
+   border: .15em solid #ffffff;
    color: var(--button-text-color);
    border-radius: 10px;
    font-size: larger;
    padding: 1em;
    cursor: pointer;
    text-align: center;
-   width: 15em;
-   height: 10em;
+   width: 12em;
+   height: 7em;
    transition: all .3s ease-in-out;
-    }
+  }
 
   .category-button:hover {
-   transform: scale(1.05);
-   background: var(--primary-color);
+   border: .20em solid #ffffff;
+   transform: scale(1.04);
+   transition: all .1s ease-in-out;
   }
 
   .start-button {
-   border: solid;
+   border: .25em solid var(--border-color);
    background: var(--primary-color);
-   border-width: .25em;
-   border-color: var(--border-color);;
    border-radius: 10px;
    font-size: larger;
    padding: 1em;

@@ -1,11 +1,13 @@
 <script>
   // @ts-nocheck
+  import Icon from '@iconify/svelte';
   import { Sound } from "svelte-sound";
   import correctsound from "./assets/correctsound.mp3";
   import incorrectsound from "./assets/wrongsound.mp3";
   import { onMount } from "svelte";
   import { started } from "./store.js";
   import StartScreen from "./StartScreen.svelte";
+  import { fade, fly } from 'svelte/transition';
 
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);
@@ -22,7 +24,7 @@
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+      [array[i], array[j]] = [aray[j], array[i]];
     }
     return array;
   };
@@ -59,7 +61,7 @@
     if (answer === questions[currentQuestionIndex].correctAnswer) {
       correct_sound.play();
       score++;
-      time = 30;
+      time = 20;
     } else {
       gameOver = true;
       incorrect_sound.play();
@@ -84,6 +86,10 @@
     currentQuestionIndex = 0;
     gameOver = false;
   }
+    // Function to reset the game state
+  function goBack() {
+    started.set(false);
+  }
 </script>
 
 <main>
@@ -96,6 +102,9 @@
         <button on:click={resetGame}>Try Again</button>
       </div>
     {:else if questions.length > 0 && currentQuestionIndex < questions.length}
+    <div class="backDiv">
+      <button class="backButton" on:click={goBack}><Icon icon="mingcute:arrow-left-fill" /></button>
+    </div>
       <div class="currentScore">
         <h3>Score: {score}</h3>
         <h3>Time: {time.toFixed(2)}</h3>
@@ -113,7 +122,9 @@
     {/if}
   {/if}
   {#if !$started}
+  <div class="StartScreen" in:fly={{ x: 200, duration: 1000 }}>
     <StartScreen />
+  </div>
   {/if}
 </main>
 
@@ -166,6 +177,28 @@
      transition: background 0.3s ease;
      text-align: center;
   }
+
+  .backDiv {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: .5em;
+  }
+
+  .backButton {
+    padding-left: .75em;
+    padding-right: .75em;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    background: white;
+    border-style: none;
+    color: var(--text-color)
+  }
+  
+  .backButton:hover {
+    transform: scale(1.05);
+    background: white
+  }
  
   button:hover {
      background: var(--hover-color);
@@ -174,5 +207,9 @@
   button:disabled {
      background: var(--disabled-color);
      cursor: not-allowed;
+  }
+
+  .StartScreen {
+    overflow: hidden;
   }
 </style>
