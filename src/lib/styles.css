@@ -16,10 +16,4 @@
   main {
      font-family: 'Roboto', sans-serif;
      color: var(--button-text-color);
-     text-align: center;
-     padding: 1em;
-     margin: 0,10em,10em,10em auto;
-     display: grid;
-     justify-items: center;
-     /*border:solid var(--secondary-color) ;*/
   }
