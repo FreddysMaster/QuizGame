@@ -1,12 +1,19 @@
 <script>
 	import "$lib/styles.css";
+  import { InlineModal } from 'svelte-inline-modal'
 </script>
 
 <main>
 <nav>
-	<a href="/login">
-		<button class="login-button">Login</button>
-	</a>
+  <InlineModal let:open>
+    <!-- Open Button -->
+    <button class="login-button" on:click={open}>Login</button>
+  
+    <!-- Modal Content -->
+    <div slot="menu" let:close>
+      <h2>It's Modal Menu</h2>
+  </InlineModal>
+
 </nav>
 
 <slot />
