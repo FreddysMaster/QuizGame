@@ -109,7 +109,7 @@
   }
 
   h2 {
-    font-family: "Workbench", sans-serif;
+    font-family:  "Permanent Marker", cursive;
     color: var(--button-text-color);
   }
 
@@ -136,6 +136,8 @@
     border-radius: 10px;
     width: calc(45% - 2em);
     font-size: 1.25rem;
+    min-height: 100px;
+    max-height: 1100px;
   }
 
   button {
