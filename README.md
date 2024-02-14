@@ -1,40 +1,38 @@
-# Quiz Game
+# create-svelte
 
-This is a simple Quiz Game that challenges the user to answer as many questions as they can without getting any questions wrong.
+Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
 
-## Setup
+## Creating a project
 
-To setup, you have to have a MySQL server running and have npm installed your system.
+If you're seeing this, you've probably already done this step. Congrats!
 
-### MySQL 
+```bash
+# create a new project in the current directory
+npm create svelte@latest
 
-To install MySQL, the easiest way to run it is through [xampp](https://www.apachefriends.org/download.html).  Install Xampp, run it and start the Apache and MySQL server.  You should have MySQL running now!
+# create a new project in my-app
+npm create svelte@latest my-app
+```
 
-### npm
+## Developing
 
-To install npm, you need to install NodeJS [here](https://nodejs.org/en).  This will give you access to npm in the terminal.
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-### Setting up the Server
+```bash
+npm run dev
 
-To get started with running the server, you need to get this project on your local machine or server.  You can do this by cloning this github repo using git or just download the zip under the code dropdown and unzip it.
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
 
+## Building
 
-#### Installing the Packages
+To create a production version of your app:
 
-Navigate to the folder that the project it stored on your local machine in your terminal and run the following command:
-```npm install```
+```bash
+npm run build
+```
 
-After you run the install command all the packages should be installed on your system.
+You can preview the production build with `npm run preview`.
 
-#### Populate the Database
-
-Before you are ready to play the Quiz Game, you need to populate the SQL Database with the Questions.  You can easily do this by running *mysqlinsert.js*.  You can run this file by running the following command in the projects root directory:
-```node mysqlinsert.js```
-
-#### Running the Server
-
-After you followed all of the previous steps above you should be able to run a local server by running the command:
-```npm run dev:both```
-
-This will setup the server at the web address: http://localhost:5173
-
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
