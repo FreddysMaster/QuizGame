@@ -39,7 +39,7 @@
     general_knowledge: "General Knowledge",
   };
   let colors = [
-    "#fcd01e", // Yellow
+    "#e6c642", // Yellow
     "#f94e4e", // Red
     "#685af5", // Purple
     "#3ce976", // Green
@@ -109,17 +109,18 @@
 
 <style>
   :root {
-    background-color: var(--background-color);
+    background-color: #12181b;
   }
 
   .parent-container {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: center;
   }
 
   .stack {
     display: grid;
+    justify-items: center;
     grid-template-columns: repeat(5, 1fr);
     column-gap: 1em;
     row-gap: 1.5em;
