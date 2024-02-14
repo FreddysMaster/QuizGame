@@ -18,6 +18,7 @@
 <style>
     :root {
         background-color: var(--background-color);
+        text-align: center;
     }
 
     h2 {

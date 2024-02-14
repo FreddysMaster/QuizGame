@@ -12,7 +12,7 @@
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);
 
-  let time = 5.0;
+  let time = 2000.0;
   let currentQuestionIndex = 0;
   let gameOver = false;
   let questions = [];
@@ -82,7 +82,7 @@
     <div class="backDiv">
       <a href="/">
         <button class="backButton"
-          ><Icon icon="mingcute:arrow-left-fill" /></button
+          ><Icon icon="mingcute:arrow-left-fill" width="1.5em" height="1.5em" /></button
         >
       </a>
     </div>
@@ -106,6 +106,14 @@
 <style>
   :root {
     background-color: var(--background-color);
+  }
+
+  main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin:  0 auto;
   }
 
   h2 {
@@ -161,10 +169,9 @@
   }
 
   .backButton {
-    padding-left: 0.75em;
-    padding-right: 0.75em;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+    display: flex;
+    padding: .5em;
+    align-content: center;
     background: white;
     border-style: none;
     color: var(--text-color);
