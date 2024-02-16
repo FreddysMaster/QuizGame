@@ -4,22 +4,33 @@ import { getQuestions } from "@trivia-api/fetch";
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'QuizGame'
+  password: ''
 });
 
 connection.connect((error) => {
   if (error) throw error;
-  console.log("Successfully connected to the database.");
+  console.log("Successfully connected to the server.");
 
-  const createTableSql = `
-  CREATE TABLE IF NOT EXISTS questions (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      category VARCHAR(255) NOT NULL,
-      question TEXT NOT NULL,
-      answers TEXT NOT NULL,
-      correctAnswer VARCHAR(255) NOT NULL
-  );`;
+  // Check if the QuizGame database exists, if not, create it
+  const createDatabaseSql = "CREATE DATABASE IF NOT EXISTS QuizGame;";
+  connection.query(createDatabaseSql, (error) => {
+    if (error) throw error;
+    console.log("Database created or already exists.");
+
+    // Now connect to the newly created (or existing) database
+    connection.changeUser({ database: 'QuizGame' }, (error) => {
+      if (error) throw error;
+      console.log("Switched to QuizGame database.");
+
+      // Continue with table creation and data insertion
+      const createTableSql = `
+      CREATE TABLE IF NOT EXISTS questions (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          category VARCHAR(255) NOT NULL,
+          question TEXT NOT NULL,
+          answers TEXT NOT NULL,
+          correctAnswer VARCHAR(255) NOT NULL
+      );`;
 
   connection.query(createTableSql, async (error, results) => {
     if (error) throw error;
@@ -30,10 +41,17 @@ connection.connect((error) => {
       for (let i = 0; i < 10; i++) {
         await insertQuestions();
       }
+      // Close the connection after all questions have been inserted
+      connection.end((error) => {
+        if (error) throw error;
+        console.log('MySQL connection closed successfully.');
+      });
     } catch (error) {
       console.error(`Error fetching and inserting trivia questions:`, error);
     }
   });
+});
+});
 });
 
 async function insertQuestions() {

@@ -1,6 +1,6 @@
 <script>
   // @ts-nocheck
-  import { score } from '$lib/stores.js';
+  import { score, selectedCategories } from "$lib/stores.js";
   import "$lib/styles.css";
   import Icon from "@iconify/svelte";
   import { Sound } from "svelte-sound";
@@ -8,6 +8,7 @@
   import incorrectsound from "$lib/assets/wrongsound.mp3";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
+  
 
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);
@@ -17,13 +18,13 @@
   let gameOver = false;
   let questions = [];
   let loading = true;
-  $score = 0
+  $score = 0;
 
   // Function to shuffle an array
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [aray[j], array[i]];
+      [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
   };
@@ -44,6 +45,7 @@
     try {
       const response = await fetch(`http://localhost:3000/api/questions`);
       questions = await response.json();
+      questions = questions.filter(question => $selectedCategories.includes(question.category));
       questions = shuffleArray(questions);
     } catch (error) {
       console.error("Error fetching questions:", error);
@@ -51,9 +53,6 @@
       loading = false; // Set loading to false regardless of success or failure
     }
   }
-
-  // Call fetchQuestions when the DOM content is loaded
-  onMount(fetchQuestions);
 
   function handleClick(answer) {
     if (answer === questions[currentQuestionIndex].correctAnswer) {
@@ -82,7 +81,11 @@
     <div class="backDiv">
       <a href="/">
         <button class="backButton"
-          ><Icon icon="mingcute:arrow-left-fill" width="1.5em" height="1.5em" /></button
+          ><Icon
+            icon="mingcute:arrow-left-fill"
+            width="1.5em"
+            height="1.5em"
+          /></button
         >
       </a>
     </div>
@@ -109,15 +112,15 @@
   }
 
   main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin:  0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
   }
 
   h2 {
-    font-family:  "Permanent Marker", cursive;
+    font-family: "Permanent Marker", cursive;
     color: var(--button-text-color);
   }
 
@@ -137,6 +140,7 @@
     width: 45%;
   }
 
+
   .question {
     background-color: var(--secondary-color);
     padding: 1em;
@@ -144,8 +148,10 @@
     border-radius: 10px;
     width: calc(45% - 2em);
     font-size: 1.25rem;
-    min-height: 100px;
-    max-height: 1100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40%;
   }
 
   button {
@@ -172,7 +178,7 @@
 
   .backButton {
     display: flex;
-    padding: .5em;
+    padding: 0.5em;
     align-content: center;
     background: white;
     border-style: none;
