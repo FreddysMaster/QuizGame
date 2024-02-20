@@ -13,7 +13,7 @@
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);
 
-  let time = 2000.0;
+  let time = 20.0;
   let currentQuestionIndex = 0;
   let gameOver = false;
   let questions = [];
@@ -29,7 +29,7 @@
     return array;
   };
 
-  // This interval updates every  100 milliseconds to provide subsecond precision
+  // This interval updates every 100 milliseconds to provide subsecond precision
   onMount(() => {
     setInterval(() => {
       time -= 0.01;
@@ -40,19 +40,21 @@
     fetchQuestions();
   });
 
-  // Fetch questions from the backend when the page loads
-  async function fetchQuestions() {
-    try {
-      const response = await fetch(`http://localhost:3000/api/questions`);
-      questions = await response.json();
-      questions = questions.filter(question => $selectedCategories.includes(question.category));
-      questions = shuffleArray(questions);
-    } catch (error) {
-      console.error("Error fetching questions:", error);
-    } finally {
-      loading = false; // Set loading to false regardless of success or failure
-    }
+// Fetch questions from the backend when the page loads
+async function fetchQuestions() {
+  try {
+    const response = await fetch(`http://localhost:3000/api/questions`);
+    questions = await response.json();
+    // Use the value of the selectedCategories store directly
+    questions = questions.filter(question => selectedCategories.includes(question.category));
+    questions = shuffleArray(questions);
+  } catch (error) {
+    console.error("Error fetching questions:", error);
+  } finally {
+    loading = false; // Set loading to false regardless of success or failure
   }
+}
+
 
   function handleClick(answer) {
     if (answer === questions[currentQuestionIndex].correctAnswer) {

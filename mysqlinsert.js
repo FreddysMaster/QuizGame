@@ -59,8 +59,7 @@ async function insertQuestions() {
     const questions = await getQuestions({ limit: 50 });
     // Insert each question into the database
     questions.forEach(question => {
-      const { category, question: qObject, correctAnswer, incorrectAnswers } = question;
-      const questionText = qObject.text; // Extract question text from the object
+      const { category, question: questionText, correctAnswer, incorrectAnswers } = question;
       const answers = JSON.stringify([...incorrectAnswers, correctAnswer]);
       const randomPosition = Math.floor(Math.random() * (incorrectAnswers.length + 1));
       const answersArray = JSON.parse(answers);
