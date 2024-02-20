@@ -25,4 +25,8 @@
     width: 5em;
     color: var(--button-text-color);
   }
+
+  .login-button:hover {
+    background: var(--hover-color);
+  }
 </style>
