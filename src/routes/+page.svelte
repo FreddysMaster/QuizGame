@@ -174,4 +174,8 @@
     margin-top: 3em;
     color: var(--button-text-color);
   }
+
+  .start-button:hover {
+    background: var(--hover-color);
+  }
 </style>
