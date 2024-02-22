@@ -55,6 +55,7 @@ connection.connect(async (error) => {
     const createLeaderboardTableSql = `
       CREATE TABLE IF NOT EXISTS leaderboard (
           leaderboard_id INT AUTO_INCREMENT PRIMARY KEY,
+          user_id INT NOT NULL,
           FOREIGN KEY (user_id) REFERENCES users(user_id),
           score INT DEFAULT ('0')
       )`;
