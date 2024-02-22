@@ -24,6 +24,7 @@
         <input bind:value={email} type="email" placeholder="Enter your email" />
         <h3>Password: </h3>
         <input bind:value={password} type="password" placeholder="Enter your password" />
+        <a href="#" onclick={() => (showModal = false)}>Register</a>
         <br>
         <button on:click={handleLogin}>Login</button>
       </Modal>   
