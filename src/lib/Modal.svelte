@@ -1,10 +1,10 @@
 <script>
-	export let showModal;
-
+	import { modalStore } from './stores/modalStore.js';
+  
 	let dialog;
-
-	$: if (dialog && showModal) dialog.showModal();
-</script>
+  
+	$: if (dialog && $modalStore) dialog.showModal();
+  </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
@@ -14,7 +14,6 @@
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation>
-		<slot name="header" />
 		<slot />
 	</div>
 </dialog>

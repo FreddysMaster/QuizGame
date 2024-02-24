@@ -16,3 +16,4 @@ export const categories = [
 ];
 
 export const selectedCategories = writable(categories);
+
