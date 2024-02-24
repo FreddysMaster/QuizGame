@@ -1,10 +1,14 @@
 <script>
-	import { modalStore } from './stores/modalStore.js';
-  
+	export let showModal;
+
 	let dialog;
-  
-	$: if (dialog && $modalStore) dialog.showModal();
-  </script>
+
+	$: {
+		if (dialog && showModal) {
+			dialog.showModal();
+		}
+	}
+</script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog

@@ -136,8 +136,7 @@
     display: grid;
     justify-items: center;
     grid-template-columns: repeat(5, 1fr);
-    column-gap: 1em;
-    row-gap: 1.5em;
+    gap: 1.5em 1em;
   }
   
   @media (min-width: 1250px) {
