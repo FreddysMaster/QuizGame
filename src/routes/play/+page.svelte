@@ -127,8 +127,7 @@ async function fetchQuestions() {
   }
 
   h3 {
-    padding-left: 1em;
-    padding-right: 1em;
+    padding: 0 1em 0 1em;
   }
 
   .currentScore {
@@ -146,7 +145,7 @@ async function fetchQuestions() {
   .question {
     background-color: var(--secondary-color);
     padding: 1em;
-    margin-top: 0;
+    inset: 0;
     border-radius: 10px;
     width: calc(45% - 2em);
     font-size: 1.25rem;
@@ -159,10 +158,7 @@ async function fetchQuestions() {
   button {
     background: var(--primary-color);
     color: var(--button-text-color);
-    font-family: "Roboto", sans-serif;
-    border: solid;
-    border-width: 0.25em;
-    border-color: var(--border-color);
+    border: 0.25em solid var(--border-color);
     border-radius: 10px;
     font-size: larger;
     padding: 1em;
@@ -173,8 +169,7 @@ async function fetchQuestions() {
 
   .backDiv {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    inset: 0;
     padding: 0.5em;
   }
 

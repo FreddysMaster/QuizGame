@@ -46,7 +46,7 @@
   categories.forEach((category, index) => {
     categoryColors[category] = colors[index % colors.length];
   });
-  
+
   function handleCategoryChange(event) {
     const category = event.target.value;
     selectedCategories.update((categories) => {
@@ -63,14 +63,12 @@
 
     // Reset currentQuestionIndex to restart the game
     currentQuestionIndex = 0;
-
-    
   }
 </script>
 
 <main>
   <!-- Category Selection -->
-   <div class="parent-container">
+  <div class="parent-container">
     <h1 class="categories-label">Categories</h1>
     <div class="categories-grid">
       {#each categories as category}
@@ -78,12 +76,20 @@
           value={category}
           style="background: {$selectedCategories.includes(category)
             ? categoryColors[category]
-            : '#7f8c8d'}; outline:.1em solid {categoryColors[category]};"
+            : '#7f8c8d'}; outline:.15em solid {categoryColors[
+            category
+          ]}; overflow: hidden;"
           on:click={handleCategoryChange}
-          class="category-button {$selectedCategories.includes(category) ? 'selected' : ''}"
+          class="category-button {$selectedCategories.includes(category)
+            ? 'selected'
+            : ''}"
         >
-          <Icon icon={categoriesIcons[category]} width="2em" height="2em" /><br
-          />{displayNames[category]}
+          <Icon
+            icon={categoriesIcons[category]}
+            width="2em"
+            height="2em"
+            style="pointer-events: none;"
+          /><br />{displayNames[category]}
         </button>
       {/each}
     </div>
@@ -128,37 +134,47 @@
 
   .category-button:hover {
     border: 0.2em solid #ffffff;
-    transform: scale(1.04);
-    transition: all 0.1s ease-in-out;
+    transform: scale(1.05);
+    transition: all 0.15s ease-in-out;
+    overflow: hidden;
   }
 
-    .categories-grid {
+  .categories-grid {
     display: grid;
     justify-items: center;
     grid-template-columns: repeat(5, 1fr);
-    column-gap: 1em;
-    row-gap: 1.5em;
+    gap: 1.5em 1em;
   }
-  
+
   @media (min-width: 1250px) {
-  .categories-grid { grid-template-columns: repeat(5, 1fr); }
-}
+    .categories-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
 
-@media (max-width: 1249px) and (min-width: 900px) {
-  .categories-grid { grid-template-columns: repeat(4, 1fr); }
-}
+  @media (max-width: 1249px) and (min-width: 900px) {
+    .categories-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
 
-@media (max-width: 899px) and (min-width: 600px) {
-  .categories-grid { grid-template-columns: repeat(3, 1fr); }
-}
+  @media (max-width: 899px) and (min-width: 600px) {
+    .categories-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
 
-@media (max-width: 599px) and (min-width: 450px)  {
-  .categories-grid { grid-template-columns: repeat(2, 1fr); }
-}
+  @media (max-width: 599px) and (min-width: 450px) {
+    .categories-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
 
-@media (max-width: 449px) and (min-width: 0px) {
-  .categories-grid { grid-template-columns: repeat(1, 1fr); }
-}
+  @media (max-width: 449px) and (min-width: 0px) {
+    .categories-grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
   .start-button {
     border: 0.25em solid var(--border-color);
     background: var(--primary-color);

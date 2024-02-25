@@ -1,33 +1,158 @@
 <script>
   import "$lib/styles.css";
-  import Modal from '$lib/Modal.svelte';
+  import Modal from "$lib/Modal.svelte";
+  import { fade } from "svelte/transition";
+  import Icon from "@iconify/svelte";
+  let username = "";
+  let email = "";
+  let password = "";
   let showModal = false;
-  let username = '';
-  let email = '';
-  let password = '';
+  let RememberMe = false;
 
   function handleLogin() {
-    // Here you can handle the login logic, e.g., send a request to the server
-    console.log(`Username: ${username}, Email: ${email}, Password: ${password}`);
-    showModal = false; // close the modal after login
+    console.log(
+      `Email: ${email}, Password: ${password}, Remember: ${RememberMe}`,
+    );
+  }
+
+  function handleRegister() {
+    console.log(
+      `Username: ${username}, Email: ${email}, Password: ${password}`,
+    );
+    showModal = true;
   }
 </script>
 
 <main>
   <nav>
-      <button class="login-button" on:click={() => (showModal = true)}>Login</button>
-      <Modal bind:showModal >
-        <h2 slot="header">Login</h2>
-        <h3>Username: </h3>
-        <input bind:value={username} placeholder="Enter your username" />
-        <h3>Email: </h3>
-        <input bind:value={email} type="email" placeholder="Enter your email" />
-        <h3>Password: </h3>
-        <input bind:value={password} type="password" placeholder="Enter your password" />
-        <a href="#" onclick={() => (showModal = false)}>Register</a>
-        <br>
-        <button on:click={handleLogin}>Login</button>
-      </Modal>   
+    <button
+      class="login-button"
+      on:click={() => {
+        showModal = true;
+      }}>Login</button
+    >
+    <Modal bind:showModal>
+      {#if showModal}
+        <div in:fade={{ duration: 500 }}>
+          <h2>Login</h2>
+          <div class="input-container">
+            <Icon
+              icon="fa-solid:envelope"
+              style="
+            padding: 10px;
+            background-color: #eeeeee;
+            height: inherit;
+            color: #424953;
+            min-width: .5em;
+            text-align: center;
+            border-right: 1px solid #a9a9a9;"
+            />
+            <input
+              class="input-field"
+              bind:value={email}
+              type="email"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="input-container">
+            <Icon
+              icon="fa-solid:lock"
+              style="
+            padding: 10px;
+            background-color: #eeeeee;
+            height: inherit;
+            color: #424953;
+            min-width: .5em;
+            text-align: center;
+            border-right: 1px solid #a9a9a9;"
+            />
+            <input
+              class="input-field"
+              bind:value={password}
+              type="password"
+              placeholder="Enter your password"
+            />
+          </div>
+          <div class="remember-container">
+            <input type="checkbox" id="rememberme" bind:checked={RememberMe} />
+            <label for="rememberme">Remember Me</label>
+          </div>
+          <div class="login-container">
+            <button class="alt-button" on:click|preventDefault={() => (showModal = false)}
+              >Register</button
+            >
+            <button on:click={handleLogin}>Login</button>
+          </div>
+        </div>
+      {:else}
+        <div in:fade={{ duration: 500 }}>
+          <h2>Register</h2>
+          <div class="input-container">
+            <Icon
+              icon="fa-solid:user"
+              style="
+            padding: 10px;
+            background-color: #eeeeee;
+            height: inherit;
+            color: #424953;
+            min-width: .5em;
+            text-align: center;
+            border-right: 1px solid #a9a9a9;"
+            />
+            <input
+              class="input-field"
+              bind:value={username}
+              type="text"
+              placeholder="Enter your username"
+            />
+          </div>
+          <div class="input-container">
+            <Icon
+              icon="fa-solid:envelope"
+              style="
+            padding: 10px;
+            background-color: #eeeeee;
+            height: inherit;
+            color: #424953;
+            min-width: .5em;
+            text-align: center;
+            border-right: 1px solid #a9a9a9;"
+            />
+            <input
+              class="input-field"
+              bind:value={email}
+              type="email"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="input-container">
+            <Icon
+              icon="fa-solid:lock"
+              style="
+            padding: 10px;
+            background-color: #eeeeee;
+            height: inherit;
+            color: #424953;
+            min-width: .5em;
+            text-align: center;
+            border-right: 1px solid #a9a9a9;"
+            />
+            <input
+              class="input-field"
+              bind:value={password}
+              type="password"
+              placeholder="Enter your password"
+            />
+          </div>
+          <div class="register-container">
+            <button class="alt-button" on:click|preventDefault={() => (showModal = true)}
+              >Login</button
+            >
+            <button on:click={handleRegister}>Register</button>
+          </div>
+        </div>
+      {/if}
+    </Modal>
   </nav>
   <slot />
 </main>
@@ -38,14 +163,34 @@
     justify-content: flex-end;
   }
 
+  h2 {
+    margin-top: 0;
+  }
+
+  .remember-container {
+    display: flex;
+    align-items: start;
+    margin: 1em 0 2em 0;
+  }
+
+  .login-container {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .register-container {
+    display: flex;
+    justify-content: space-around;
+  }
+
   .login-button {
-    border:  0.25em solid var(--border-color);
+    border: 0.25em solid var(--border-color);
     background: var(--primary-color);
-    border-radius:  10px;
+    border-radius: 10px;
     font-size: larger;
-    padding:  0.5em;
+    padding: 0.5em;
     cursor: pointer;
-    width:  5em;
+    width: 5em;
     color: var(--button-text-color);
   }
 
@@ -53,27 +198,53 @@
     background: var(--hover-color);
   }
 
-/* Add styles for the input fields to improve usability */
-input {
-    display: block;
-    width:  100%;
-    padding:  0.5em;
-    margin-bottom:  1em;
-    font-size:  1em;
-}
+  /* Style the input container */
+  .input-container {
+    display: flex;
+    width: 100%;
+    margin-bottom: 1em;
+    border-radius: 5px;
+    border: 1px solid #a9a9a9;
+    overflow: hidden;
+  }
 
-/* Style the login button */
-button {
+  /* Style the input fields */
+  .input-field {
+    width: 100%;
+    padding: 1em;
+    outline: none;
+    border: none;
+  }
+
+  /* Style the login button */
+  button {
     background-color: var(--primary-color);
     border: none;
-    border-radius:  10px;
-    padding:  0.5em  1em;
-    font-size:  1em;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    font-size: 1em;
     cursor: pointer;
     color: var(--button-text-color);
-}
-
-button:hover {
+    width: 8em;
+  }
+  
+  button:hover {
     background-color: var(--hover-color);
-}
+  }
+
+  .alt-button {
+    background: none;
+    border: 1px solid #a9a9a9;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    font-size: 1em;
+    cursor: pointer;
+    color: #a9a9a9;
+    width: 8em;
+  }
+  .alt-button:hover {
+    background: #a9a9a9;
+    color: white;
+  }
+
 </style>

@@ -48,17 +48,19 @@ connection.connect(async (error) => {
           username VARCHAR(255) NOT NULL,
           email VARCHAR(255) NOT NULL UNIQUE,
           password VARCHAR(255) NOT NULL,
-          highscore INT DEFAULT ('0')
+          highscore INT DEFAULT ('0'),
+          user_type ENUM('user', 'admin') DEFAULT 'user'
       );`;
 
     // Create the leaderboard table
     const createLeaderboardTableSql = `
       CREATE TABLE IF NOT EXISTS leaderboard (
-          leaderboard_id INT AUTO_INCREMENT PRIMARY KEY,
+          rank INT AUTO_INCREMENT PRIMARY KEY,
           user_id INT NOT NULL,
-          FOREIGN KEY (user_id) REFERENCES users(user_id),
-          score INT DEFAULT ('0')
-      )`;
+          username VARCHAR(255) NOT NULL,
+          highscore INT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users(user_id)
+      );`
 
     // Execute both table creation queries
     await new Promise((resolve, reject) => {
@@ -87,7 +89,7 @@ connection.connect(async (error) => {
 
     // Fetch and insert questions
     try {
-      for (let i =  0; i <  10; i++) {
+      for (let i = 0; i < 10; i++) {
         await insertQuestions();
       }
       // Close the connection after all questions have been inserted
@@ -105,15 +107,15 @@ connection.connect(async (error) => {
 
 async function insertQuestions() {
   try {
-    const questions = await getQuestions({ limit:  50 });
+    const questions = await getQuestions({ limit: 50 });
     // Insert each question into the database
     for (const question of questions) {
       const { category, question: questionObj, correctAnswer, incorrectAnswers } = question;
       const questionText = questionObj.text
       const answers = JSON.stringify([...incorrectAnswers, correctAnswer]);
-      const randomPosition = Math.floor(Math.random() * (incorrectAnswers.length +  1));
+      const randomPosition = Math.floor(Math.random() * (incorrectAnswers.length + 1));
       const answersArray = JSON.parse(answers);
-      answersArray.splice(randomPosition,  0, answersArray.pop());
+      answersArray.splice(randomPosition, 0, answersArray.pop());
 
       const item = {
         category: category,
