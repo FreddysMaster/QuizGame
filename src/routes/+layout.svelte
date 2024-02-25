@@ -163,6 +163,10 @@
     justify-content: flex-end;
   }
 
+  h2 {
+    margin-top: 0;
+  }
+
   .remember-container {
     display: flex;
     align-items: start;
