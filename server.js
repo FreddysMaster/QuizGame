@@ -30,11 +30,16 @@ app.get('/api/questions', (req, res) => {
     }
     
     const questions = results.map(question => ({
-      category: question.category,
-      question: question.question,
-      answers: JSON.parse(question.answers),
-      correctAnswer: question.correctAnswer
+        question: question.question,
+        answer1: question.answer1,
+        answer2: question.answer2,
+        answer3: question.answer3,
+        answer4: question.answer4,
+        correctAnswer: question.correctAnswer,
+        category: question.category
     }));
+
+
     
     res.json(questions);
   });

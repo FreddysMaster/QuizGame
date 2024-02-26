@@ -35,10 +35,21 @@ connection.connect(async (error) => {
     const createQuestionsTableSql = `
       CREATE TABLE IF NOT EXISTS questions (
           question_id INT AUTO_INCREMENT PRIMARY KEY,
-          category VARCHAR(255) NOT NULL,
           question TEXT NOT NULL,
-          answers TEXT NOT NULL,
-          correctAnswer VARCHAR(255) NOT NULL
+          answer1 VARCHAR(255) NOT NULL,
+          answer2 VARCHAR(255) NOT NULL,
+          answer3 VARCHAR(255) NOT NULL,
+          answer4 VARCHAR(255) NOT NULL,
+          correctAnswer VARCHAR(255) NOT NULL,
+          category VARCHAR(255) NOT NULL,
+          FOREIGN KEY (category_id) REFERENCES categories(category)
+      );`;
+
+      // Create the category table
+    const createCategoriesTableSql = `
+      CREATE TABLE IF NOT EXISTS categories (
+          category_id INT AUTO_INCREMENT PRIMARY KEY,
+          category VARCHAR(255) NOT NULL
       );`;
 
     // Create the user table
@@ -49,22 +60,32 @@ connection.connect(async (error) => {
           email VARCHAR(255) NOT NULL UNIQUE,
           password VARCHAR(255) NOT NULL,
           highscore INT DEFAULT ('0'),
-          user_type ENUM('user', 'admin') DEFAULT 'user',
-          last_login DATE,
-          registered_at DATE
+          user_type ENUM('user', 'admin') DEFAULT 'user'
       );`;
 
     // Create the leaderboard table
     const createLeaderboardTableSql = `
       CREATE TABLE IF NOT EXISTS leaderboard (
-          rank INT AUTO_INCREMENT PRIMARY KEY,
-          user_id INT NOT NULL,
-          username VARCHAR(255) NOT NULL,
+          leaderboard_id INT AUTO_INCREMENT PRIMARY KEY,
+          rank INT NOT NULL,
           score INT NOT NULL,
+          time DATE NOT NULL,
+          user_id INT NOT NULL,
+          category VARCHAR(255) NOT NULL,
           FOREIGN KEY (user_id) REFERENCES users(user_id),
-          time DATE
+          FOREIGN KEY (category) REFERENCES categories(category)
       );`
 
+    // Execute both table creation queries
+    await new Promise((resolve, reject) => {
+      connection.query(createCategoriesTableSql, (error) => {
+        if (error) reject(error);
+        else resolve();
+      });
+    });
+    console.log("Category table created or already exists.");
+
+    
     // Execute both table creation queries
     await new Promise((resolve, reject) => {
       connection.query(createQuestionsTableSql, (error) => {
@@ -110,21 +131,27 @@ connection.connect(async (error) => {
 
 async function insertQuestions() {
   try {
-    const questions = await getQuestions({ limit: 50 });
+    const questions = await getQuestions({ limit:  50 });
     // Insert each question into the database
     for (const question of questions) {
       const { category, question: questionObj, correctAnswer, incorrectAnswers } = question;
-      const questionText = questionObj.text
+      const questionText = questionObj.text;
       const answers = JSON.stringify([...incorrectAnswers, correctAnswer]);
-      const randomPosition = Math.floor(Math.random() * (incorrectAnswers.length + 1));
+      const randomPosition = Math.floor(Math.random() * (incorrectAnswers.length +  1));
       const answersArray = JSON.parse(answers);
-      answersArray.splice(randomPosition, 0, answersArray.pop());
+      answersArray.splice(randomPosition,  0, answersArray.pop());
+
+      // Fetch or insert the category and get its ID
+      const categoryId = await fetchOrInsertCategory(category);
 
       const item = {
-        category: category,
         question: questionText,
-        answers: JSON.stringify(answersArray),
-        correctAnswer: correctAnswer
+        answer1: answersArray[0],
+        answer2: answersArray[1],
+        answer3: answersArray[2],
+        answer4: answersArray[3],
+        correctAnswer: correctAnswer,
+        category_id: categoryId
       };
 
       await new Promise((resolve, reject) => {
@@ -141,4 +168,39 @@ async function insertQuestions() {
   } catch (error) {
     console.error(`Error inserting question into database:`, error);
   }
+}
+
+async function fetchOrInsertCategory(categoryName) {
+  // Check if the category exists
+  let categoryId = await new Promise((resolve, reject) => {
+    connection.query('SELECT category_id FROM categories WHERE category = ?', [categoryName], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        // If the category exists, return its ID
+        if (results.length >  0) {
+          resolve(results[0].category_id);
+        } else {
+          resolve(null);
+        }
+      }
+    });
+  });
+
+  // If the category does not exist, insert it and return the new ID
+  if (!categoryId) {
+    await new Promise((resolve, reject) => {
+      connection.query('INSERT INTO categories (category) VALUES (?)', [categoryName], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          // Use the ID of the newly inserted category
+          categoryId = results.insertId;
+          resolve();
+        }
+      });
+    });
+  }
+
+  return categoryId;
 }
