@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Workbench&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
 
 :root {
      --primary-color: #3b82f6; /* Dark blue for primary elements */
@@ -16,6 +15,6 @@
   }
 
   main {
-     font-family: 'Roboto', sans-serif;
+     font-family: "Inter", sans-serif;
      color: var(--button-text-color);
   }

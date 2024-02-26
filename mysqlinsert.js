@@ -4,45 +4,117 @@ import { getQuestions } from "@trivia-api/fetch";
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'QuizGame'
+  password: ''
 });
 
-connection.connect((error) => {
+connection.connect(async (error) => {
   if (error) throw error;
-  console.log("Successfully connected to the database.");
+  console.log("Successfully connected to the server.");
 
-  const createTableSql = `
-  CREATE TABLE IF NOT EXISTS questions (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      category VARCHAR(255) NOT NULL,
-      question TEXT NOT NULL,
-      answers TEXT NOT NULL,
-      correctAnswer VARCHAR(255) NOT NULL
-  );`;
+  try {
+    // Check if the QuizGame database exists, if not, create it
+    const createDatabaseSql = "CREATE DATABASE IF NOT EXISTS QuizGame;";
+    await new Promise((resolve, reject) => {
+      connection.query(createDatabaseSql, (error) => {
+        if (error) reject(error);
+        else resolve();
+      });
+    });
+    console.log("Database created or already exists.");
 
-  connection.query(createTableSql, async (error, results) => {
-    if (error) throw error;
-    console.log("Table created or already exists.");
+    // Now connect to the newly created (or existing) database
+    await new Promise((resolve, reject) => {
+      connection.changeUser({ database: 'QuizGame' }, (error) => {
+        if (error) reject(error);
+        else resolve();
+      });
+    });
+    console.log("Switched to QuizGame database.");
 
+    // Create the questions table
+    const createQuestionsTableSql = `
+      CREATE TABLE IF NOT EXISTS questions (
+          question_id INT AUTO_INCREMENT PRIMARY KEY,
+          category VARCHAR(255) NOT NULL,
+          question TEXT NOT NULL,
+          answers TEXT NOT NULL,
+          correctAnswer VARCHAR(255) NOT NULL
+      );`;
+
+    // Create the user table
+    const createUserTableSql = `
+      CREATE TABLE IF NOT EXISTS users (
+          user_id INT AUTO_INCREMENT PRIMARY KEY,
+          username VARCHAR(255) NOT NULL,
+          email VARCHAR(255) NOT NULL UNIQUE,
+          password VARCHAR(255) NOT NULL,
+          highscore INT DEFAULT ('0'),
+          user_type ENUM('user', 'admin') DEFAULT 'user',
+          last_login DATE,
+          registered_at DATE
+      );`;
+
+    // Create the leaderboard table
+    const createLeaderboardTableSql = `
+      CREATE TABLE IF NOT EXISTS leaderboard (
+          rank INT AUTO_INCREMENT PRIMARY KEY,
+          user_id INT NOT NULL,
+          username VARCHAR(255) NOT NULL,
+          score INT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users(user_id),
+          time DATE
+      );`
+
+    // Execute both table creation queries
+    await new Promise((resolve, reject) => {
+      connection.query(createQuestionsTableSql, (error) => {
+        if (error) reject(error);
+        else resolve();
+      });
+    });
+    console.log("Questions table created or already exists.");
+
+    await new Promise((resolve, reject) => {
+      connection.query(createUserTableSql, (error) => {
+        if (error) reject(error);
+        else resolve();
+      });
+    });
+    console.log("Users table created or already exists.");
+
+    await new Promise((resolve, reject) => {
+      connection.query(createLeaderboardTableSql, (error) => {
+        if (error) reject(error);
+        else resolve();
+      });
+    });
+    console.log("Leaderboard table created or already exists.");
+
+    // Fetch and insert questions
     try {
-      // Loop 10 times to fetch and insert questions
       for (let i = 0; i < 10; i++) {
         await insertQuestions();
       }
+      // Close the connection after all questions have been inserted
+      connection.end((error) => {
+        if (error) throw error;
+        console.log('MySQL connection closed successfully.');
+      });
     } catch (error) {
       console.error(`Error fetching and inserting trivia questions:`, error);
     }
-  });
+  } catch (error) {
+    console.error(`Error during database setup:`, error);
+  }
 });
 
 async function insertQuestions() {
   try {
     const questions = await getQuestions({ limit: 50 });
     // Insert each question into the database
-    questions.forEach(question => {
-      const { category, question: qObject, correctAnswer, incorrectAnswers } = question;
-      const questionText = qObject.text; // Extract question text from the object
+    for (const question of questions) {
+      const { category, question: questionObj, correctAnswer, incorrectAnswers } = question;
+      const questionText = questionObj.text
       const answers = JSON.stringify([...incorrectAnswers, correctAnswer]);
       const randomPosition = Math.floor(Math.random() * (incorrectAnswers.length + 1));
       const answersArray = JSON.parse(answers);
@@ -55,15 +127,18 @@ async function insertQuestions() {
         correctAnswer: correctAnswer
       };
 
-      connection.query('INSERT INTO questions SET ?', item, (error, results) => {
-        if (error) {
-          console.error(`Error inserting question into database:`, error);
-        } else {
-          console.log(`Inserted question: ${questionText}`);
-        }
+      await new Promise((resolve, reject) => {
+        connection.query('INSERT INTO questions SET ?', item, (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            console.log(`Inserted question: ${questionText}`);
+            resolve();
+          }
+        });
       });
-    });
+    }
   } catch (error) {
-    throw error; // Propagate error for better error handling
+    console.error(`Error inserting question into database:`, error);
   }
 }
