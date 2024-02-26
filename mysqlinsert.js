@@ -49,7 +49,9 @@ connection.connect(async (error) => {
           email VARCHAR(255) NOT NULL UNIQUE,
           password VARCHAR(255) NOT NULL,
           highscore INT DEFAULT ('0'),
-          user_type ENUM('user', 'admin') DEFAULT 'user'
+          user_type ENUM('user', 'admin') DEFAULT 'user',
+          last_login DATE,
+          registered_at DATE
       );`;
 
     // Create the leaderboard table
@@ -58,8 +60,9 @@ connection.connect(async (error) => {
           rank INT AUTO_INCREMENT PRIMARY KEY,
           user_id INT NOT NULL,
           username VARCHAR(255) NOT NULL,
-          highscore INT NOT NULL,
-          FOREIGN KEY (user_id) REFERENCES users(user_id)
+          score INT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users(user_id),
+          time DATE
       );`
 
     // Execute both table creation queries
