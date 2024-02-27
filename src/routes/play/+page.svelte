@@ -1,6 +1,7 @@
 <script>
   // @ts-nocheck
   import { score, selectedCategories } from "$lib/stores.js";
+  import { get } from 'svelte/store';
   import "$lib/styles.css";
   import Icon from "@iconify/svelte";
   import { Sound } from "svelte-sound";
@@ -13,12 +14,13 @@
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);
 
-  let time = 20.0;
+  let time = 202.0;
   let currentQuestionIndex = 0;
   let gameOver = false;
   let questions = [];
   let loading = true;
   $score = 0;
+  let answers = [];
 
   // Function to shuffle an array
   const shuffleArray = (array) => {
@@ -40,18 +42,25 @@
     fetchQuestions();
   });
 
-// Fetch questions from the backend when the page loads
-async function fetchQuestions() {
+  async function fetchQuestions() {
   try {
     const response = await fetch(`http://localhost:3000/api/questions`);
-    questions = await response.json();
-    // Use the value of the selectedCategories store directly
-    questions = questions.filter(question => selectedCategories.includes(question.category));
-    questions = shuffleArray(questions);
+    const allQuestions = await response.json();
+
+    // Get the IDs of the selected categories
+    const selectedCategoryIds = get(selectedCategories).map(category => category.id);
+  
+    // Filter questions based on whether their category_id is included in the selectedCategoryIds
+    const filteredQuestions = allQuestions.filter(question => selectedCategoryIds.includes(question.category_id));
+
+    // Assuming questions is a writable store or a variable that holds the fetched questions
+    questions = filteredQuestions;
+    shuffleArray(questions)
+    console.log(questions)
   } catch (error) {
     console.error("Error fetching questions:", error);
   } finally {
-    loading = false; // Set loading to false regardless of success or failure
+    loading = false; // Assuming loading is a variable that tracks the loading state
   }
 }
 
@@ -76,6 +85,15 @@ async function fetchQuestions() {
     incorrect_sound.play();
     goto("/gameover");
   }
+
+  $: if (questions[currentQuestionIndex]) {
+  answers = [
+    questions[currentQuestionIndex].answer1,
+    questions[currentQuestionIndex].answer2,
+    questions[currentQuestionIndex].answer3,
+    questions[currentQuestionIndex].answer4,
+  ];
+}
 </script>
 
 <main>
@@ -97,14 +115,15 @@ async function fetchQuestions() {
     </div>
     <h2 class="question">{questions[currentQuestionIndex].question}</h2>
     <div class="grid">
-      {#each questions[currentQuestionIndex].answers as answer, index (answer)}
-        <button on:click|preventDefault={() => handleClick(answer)}>
-          <span class="answer-label"
-            >{`${String.fromCharCode(65 + index)}. `}</span
-          >{answer}
-        </button>
-      {/each}
-    </div>
+      {#if answers.length >  0}
+        {#each answers as answer, index}
+          <button on:click|preventDefault={() => handleClick(answer)}>
+            <span class="answer-label">{`${String.fromCharCode(65 + index)}. `}</span>
+            {answer}
+          </button>
+        {/each}
+      {/if}
+    </div>    
   {/if}
 </main>
 
@@ -169,7 +188,8 @@ async function fetchQuestions() {
 
   .backDiv {
     position: absolute;
-    inset: 0;
+    left: 0;
+    top: 0;
     padding: 0.5em;
   }
 

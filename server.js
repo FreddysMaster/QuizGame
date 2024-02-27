@@ -20,6 +20,7 @@ db.connect((err) => {
 app.use(express.json());
 app.use(cors());
 
+// Existing endpoint for fetching questions
 app.get('/api/questions', (req, res) => {
   const sqlQuery = 'SELECT * FROM questions';
 
@@ -36,15 +37,31 @@ app.get('/api/questions', (req, res) => {
         answer3: question.answer3,
         answer4: question.answer4,
         correctAnswer: question.correctAnswer,
-        category: question.category
+        category_id: question.category_id
     }));
 
-
-    
     res.json(questions);
   });
 });
 
+// New endpoint for fetching categories
+app.get('/api/categories', (req, res) => {
+  const sqlQuery = 'SELECT * FROM categories';
+
+  db.query(sqlQuery, (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    
+    const categories = results.map(category => ({
+        category_id: category.category_id,
+        category: category.category
+    }));
+
+    res.json(categories);
+  });
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
