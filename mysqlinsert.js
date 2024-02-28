@@ -52,6 +52,45 @@ connection.connect(async (error) => {
           category VARCHAR(255) NOT NULL
       );`;
 
+      
+    // Create the questions table
+    const createQuestionsTableSql = `
+    CREATE TABLE IF NOT EXISTS questions (
+        question_id INT AUTO_INCREMENT PRIMARY KEY,
+        question TEXT NOT NULL,
+        answer1 VARCHAR(255) NOT NULL,
+        answer2 VARCHAR(255) NOT NULL,
+        answer3 VARCHAR(255) NOT NULL,
+        answer4 VARCHAR(255) NOT NULL,
+        correctAnswer VARCHAR(255) NOT NULL,
+        category_id INT NOT NULL,
+        FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    );`;
+
+     // Create the user table
+     const createUserTableSql = `
+     CREATE TABLE IF NOT EXISTS users (
+         user_id INT AUTO_INCREMENT PRIMARY KEY,
+         username VARCHAR(255) NOT NULL,
+         email VARCHAR(255) NOT NULL UNIQUE,
+         password VARCHAR(255) NOT NULL,
+         highscore INT DEFAULT ('0'),
+         user_type ENUM('user', 'admin') DEFAULT 'user',
+         last_login DATE,
+         registered_at DATE
+     );`;
+
+   // Create the leaderboard table
+   const createLeaderboardTableSql = `
+     CREATE TABLE IF NOT EXISTS leaderboard (
+         rank INT AUTO_INCREMENT PRIMARY KEY,
+         user_id INT NOT NULL,
+         username VARCHAR(255) NOT NULL,
+         score INT NOT NULL,
+         FOREIGN KEY (user_id) REFERENCES users(user_id),
+         time DATE
+     );`
+     
     // Execute the createCategoriesTableSql query
     await new Promise((resolve, reject) => {
       connection.query(createCategoriesTableSql, async (error) => {
@@ -61,34 +100,36 @@ connection.connect(async (error) => {
     });
     console.log("Category table created or already exists.");
 
+   // Execute both table creation queries
+   await new Promise((resolve, reject) => {
+     connection.query(createQuestionsTableSql, (error) => {
+       if (error) reject(error);
+       else resolve();
+     });
+   });
+   console.log("Questions table created or already exists.");
+
+   await new Promise((resolve, reject) => {
+     connection.query(createUserTableSql, (error) => {
+       if (error) reject(error);
+       else resolve();
+     });
+   });
+   console.log("Users table created or already exists.");
+
+   await new Promise((resolve, reject) => {
+     connection.query(createLeaderboardTableSql, (error) => {
+       if (error) reject(error);
+       else resolve();
+     });
+   });
+   console.log("Leaderboard table created or already exists.");
+
     // Insert categories
     for (const category of categoriesInOrder) {
       await insertCategory(category);
     }
     console.log("Categories inserted in order.");
-
-    // Create the questions table
-    const createQuestionsTableSql = `
-      CREATE TABLE IF NOT EXISTS questions (
-          question_id INT AUTO_INCREMENT PRIMARY KEY,
-          question TEXT NOT NULL,
-          answer1 VARCHAR(255) NOT NULL,
-          answer2 VARCHAR(255) NOT NULL,
-          answer3 VARCHAR(255) NOT NULL,
-          answer4 VARCHAR(255) NOT NULL,
-          correctAnswer VARCHAR(255) NOT NULL,
-          category_id INT NOT NULL,
-          FOREIGN KEY (category_id) REFERENCES categories(category_id)
-      );`;
-
-    // Execute the createQuestionsTableSql query
-    await new Promise((resolve, reject) => {
-      connection.query(createQuestionsTableSql, (error) => {
-        if (error) reject(error);
-        else resolve();
-      });
-    });
-    console.log("Questions table created or already exists.");
 
     // Fetch and insert questions
     try {

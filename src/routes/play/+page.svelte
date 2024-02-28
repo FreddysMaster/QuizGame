@@ -1,7 +1,6 @@
 <script>
   // @ts-nocheck
-  import { score, selectedCategories } from "$lib/stores.js";
-  import { get } from 'svelte/store';
+  import { score } from "$lib/stores.js";
   import "$lib/styles.css";
   import Icon from "@iconify/svelte";
   import { Sound } from "svelte-sound";
@@ -9,27 +8,16 @@
   import incorrectsound from "$lib/assets/wrongsound.mp3";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  
 
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);
 
+  export let data;
+  const questions = data.questions;
   let time = 202.0;
   let currentQuestionIndex = 0;
-  let gameOver = false;
-  let questions = [];
-  let loading = true;
   $score = 0;
   let answers = [];
-
-  // Function to shuffle an array
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
 
   // This interval updates every 100 milliseconds to provide subsecond precision
   onMount(() => {
@@ -39,31 +27,7 @@
         time = 0;
       }
     }, 10);
-    fetchQuestions();
   });
-
-  async function fetchQuestions() {
-  try {
-    const response = await fetch(`http://localhost:3000/api/questions`);
-    const allQuestions = await response.json();
-
-    // Get the IDs of the selected categories
-    const selectedCategoryIds = get(selectedCategories).map(category => category.id);
-  
-    // Filter questions based on whether their category_id is included in the selectedCategoryIds
-    const filteredQuestions = allQuestions.filter(question => selectedCategoryIds.includes(question.category_id));
-
-    // Assuming questions is a writable store or a variable that holds the fetched questions
-    questions = filteredQuestions;
-    shuffleArray(questions)
-    console.log(questions)
-  } catch (error) {
-    console.error("Error fetching questions:", error);
-  } finally {
-    loading = false; // Assuming loading is a variable that tracks the loading state
-  }
-}
-
 
   function handleClick(answer) {
     if (answer === questions[currentQuestionIndex].correctAnswer) {
@@ -78,22 +42,18 @@
   }
 
   $: if (time <= 0) {
-    gameOver = true;
-  }
-
-  $: if (gameOver) {
     incorrect_sound.play();
     goto("/gameover");
   }
 
   $: if (questions[currentQuestionIndex]) {
-  answers = [
-    questions[currentQuestionIndex].answer1,
-    questions[currentQuestionIndex].answer2,
-    questions[currentQuestionIndex].answer3,
-    questions[currentQuestionIndex].answer4,
-  ];
-}
+    answers = [
+      questions[currentQuestionIndex].answer1,
+      questions[currentQuestionIndex].answer2,
+      questions[currentQuestionIndex].answer3,
+      questions[currentQuestionIndex].answer4,
+    ];
+  }
 </script>
 
 <main>
@@ -115,15 +75,17 @@
     </div>
     <h2 class="question">{questions[currentQuestionIndex].question}</h2>
     <div class="grid">
-      {#if answers.length >  0}
+      {#if answers.length > 0}
         {#each answers as answer, index}
           <button on:click|preventDefault={() => handleClick(answer)}>
-            <span class="answer-label">{`${String.fromCharCode(65 + index)}. `}</span>
+            <span class="answer-label"
+              >{`${String.fromCharCode(65 + index)}. `}</span
+            >
             {answer}
           </button>
         {/each}
       {/if}
-    </div>    
+    </div>
   {/if}
 </main>
 
@@ -159,7 +121,6 @@
     gap: 10px;
     width: 45%;
   }
-
 
   .question {
     background-color: var(--secondary-color);
