@@ -75,9 +75,7 @@ connection.connect(async (error) => {
          email VARCHAR(255) NOT NULL UNIQUE,
          password VARCHAR(255) NOT NULL,
          highscore INT DEFAULT ('0'),
-         user_type ENUM('user', 'admin') DEFAULT 'user',
-         last_login DATE,
-         registered_at DATE
+         user_type ENUM('user', 'admin') DEFAULT 'user'
      );`;
 
    // Create the leaderboard table

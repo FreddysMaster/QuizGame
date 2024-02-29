@@ -18,12 +18,13 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@trivia-api/fetch": "^1.37.0",
+		"@trivia-api/fetch": "^1.12.0",
 		"axios": "^1.6.7",
 		"concurrently": "^8.2.2",
 		"cors": "^2.8.5",
 		"express": "^4.18.2",
 		"mysql": "^2.18.1",
+		"pnpm": "^8.15.4",
 		"svelte-simple-modal": "^1.6.2",
 		"svelte-sound": "^0.6.0"
 	}

@@ -3,24 +3,9 @@
   import Modal from "$lib/Modal.svelte";
   import { fade } from "svelte/transition";
   import Icon from "@iconify/svelte";
-  let username = "";
-  let email = "";
-  let password = "";
+  import { enhance } from '$app/forms';
+
   let showModal = false;
-  let RememberMe = false;
-
-  function handleLogin() {
-    console.log(
-      `Email: ${email}, Password: ${password}, Remember: ${RememberMe}`,
-    );
-  }
-
-  function handleRegister() {
-    console.log(
-      `Username: ${username}, Email: ${email}, Password: ${password}`,
-    );
-    showModal = true;
-  }
 </script>
 
 <main>
@@ -33,6 +18,7 @@
     >
     <Modal bind:showModal>
       {#if showModal}
+      <form method="POST" use:enhance>
         <div in:fade={{ duration: 500 }}>
           <h2>Login</h2>
           <div class="input-container">
@@ -49,7 +35,6 @@
             />
             <input
               class="input-field"
-              bind:value={email}
               type="email"
               placeholder="Enter your email"
             />
@@ -68,23 +53,24 @@
             />
             <input
               class="input-field"
-              bind:value={password}
               type="password"
               placeholder="Enter your password"
             />
           </div>
           <div class="remember-container">
-            <input type="checkbox" id="rememberme" bind:checked={RememberMe} />
+            <input type="checkbox" id="rememberme" />
             <label for="rememberme">Remember Me</label>
           </div>
           <div class="login-container">
             <button class="alt-button" on:click|preventDefault={() => (showModal = false)}
               >Register</button
             >
-            <button on:click={handleLogin}>Login</button>
+            <button type="submit">Login</button>
           </div>
         </div>
+      </form>
       {:else}
+      <form method="POST" use:enhance>
         <div in:fade={{ duration: 500 }}>
           <h2>Register</h2>
           <div class="input-container">
@@ -101,7 +87,6 @@
             />
             <input
               class="input-field"
-              bind:value={username}
               type="text"
               placeholder="Enter your username"
             />
@@ -120,7 +105,6 @@
             />
             <input
               class="input-field"
-              bind:value={email}
               type="email"
               placeholder="Enter your email"
             />
@@ -139,7 +123,6 @@
             />
             <input
               class="input-field"
-              bind:value={password}
               type="password"
               placeholder="Enter your password"
             />
@@ -148,9 +131,10 @@
             <button class="alt-button" on:click|preventDefault={() => (showModal = true)}
               >Login</button
             >
-            <button on:click={handleRegister}>Register</button>
+            <button type="submit">Register</button>
           </div>
         </div>
+      </form>
       {/if}
     </Modal>
   </nav>
