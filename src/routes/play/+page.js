@@ -8,7 +8,7 @@ export async function load({ fetch }) {
     const allQuestions = await response.json();
 
     // Get the IDs of the selected categories
-    const selectedCategoryIds = get(selectedCategories).map(category => category.id);
+    const selectedCategoryIds = get(selectedCategories).map(category => category.category_id);
 
     // Filter questions based on whether their category_id is included in the selectedCategoryIds
     const filteredQuestions = allQuestions.filter(question => selectedCategoryIds.includes(question.category_id));

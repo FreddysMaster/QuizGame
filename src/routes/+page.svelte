@@ -37,16 +37,20 @@
 
   function handleCategoryChange(event) {
     const categoryId = parseInt(event.target.value, 10); // Parse the ID as an integer
+
     selectedCategories.update((selected) => {
       // Find the index of the category in the selected categories array by ID
-      const index = selected.findIndex((cat) => cat.id === categoryId);
-      console.log(index);
+      const index = selected.findIndex((cat) => cat.category_id === categoryId);
+
       if (index === -1) {
         // If the category is not found, add it to the selected categories array
-        return [...selected, categories.find((cat) => cat.id === categoryId)];
+        const categoryToAdd = categories.find(
+          (cat) => cat.category_id === categoryId,
+        );
+        return [...selected, categoryToAdd];
       } else {
         // If the category is found, remove it from the selected categories array
-        return selected.filter((cat) => cat.id !== categoryId);
+        return selected.filter((cat) => cat.category_id !== categoryId);
       }
     });
 
@@ -69,7 +73,9 @@
             category
           ]}; overflow: hidden;"
           on:click={handleCategoryChange}
-          class="category-button {$selectedCategories.includes(category.category)
+          class="category-button {$selectedCategories.includes(
+            category.category,
+          )
             ? 'selected'
             : ''}"
         >
