@@ -1,6 +1,6 @@
 <script>
   // @ts-nocheck
-  import { score, selectedCategories } from "$lib/stores.js";
+  import { score } from "$lib/stores.js";
   import "$lib/styles.css";
   import Icon from "@iconify/svelte";
   import { Sound } from "svelte-sound";
@@ -8,26 +8,16 @@
   import incorrectsound from "$lib/assets/wrongsound.mp3";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  
 
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);
 
-  let time = 20.0;
+  export let data;
+  const questions = data.questions;
+  let time = 202.0;
   let currentQuestionIndex = 0;
-  let gameOver = false;
-  let questions = [];
-  let loading = true;
   $score = 0;
-
-  // Function to shuffle an array
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
+  let answers = [];
 
   // This interval updates every 100 milliseconds to provide subsecond precision
   onMount(() => {
@@ -37,24 +27,7 @@
         time = 0;
       }
     }, 10);
-    fetchQuestions();
   });
-
-// Fetch questions from the backend when the page loads
-async function fetchQuestions() {
-  try {
-    const response = await fetch(`http://localhost:3000/api/questions`);
-    questions = await response.json();
-    // Use the value of the selectedCategories store directly
-    questions = questions.filter(question => selectedCategories.includes(question.category));
-    questions = shuffleArray(questions);
-  } catch (error) {
-    console.error("Error fetching questions:", error);
-  } finally {
-    loading = false; // Set loading to false regardless of success or failure
-  }
-}
-
 
   function handleClick(answer) {
     if (answer === questions[currentQuestionIndex].correctAnswer) {
@@ -69,12 +42,17 @@ async function fetchQuestions() {
   }
 
   $: if (time <= 0) {
-    gameOver = true;
-  }
-
-  $: if (gameOver) {
     incorrect_sound.play();
     goto("/gameover");
+  }
+
+  $: if (questions[currentQuestionIndex]) {
+    answers = [
+      questions[currentQuestionIndex].answer1,
+      questions[currentQuestionIndex].answer2,
+      questions[currentQuestionIndex].answer3,
+      questions[currentQuestionIndex].answer4,
+    ];
   }
 </script>
 
@@ -97,13 +75,16 @@ async function fetchQuestions() {
     </div>
     <h2 class="question">{questions[currentQuestionIndex].question}</h2>
     <div class="grid">
-      {#each questions[currentQuestionIndex].answers as answer, index (answer)}
-        <button on:click|preventDefault={() => handleClick(answer)}>
-          <span class="answer-label"
-            >{`${String.fromCharCode(65 + index)}. `}</span
-          >{answer}
-        </button>
-      {/each}
+      {#if answers.length > 0}
+        {#each answers as answer, index}
+          <button on:click|preventDefault={() => handleClick(answer)}>
+            <span class="answer-label"
+              >{`${String.fromCharCode(65 + index)}. `}</span
+            >
+            {answer}
+          </button>
+        {/each}
+      {/if}
     </div>
   {/if}
 </main>
@@ -141,7 +122,6 @@ async function fetchQuestions() {
     width: 45%;
   }
 
-
   .question {
     background-color: var(--secondary-color);
     padding: 1em;
@@ -169,7 +149,8 @@ async function fetchQuestions() {
 
   .backDiv {
     position: absolute;
-    inset: 0;
+    left: 0;
+    top: 0;
     padding: 0.5em;
   }
 

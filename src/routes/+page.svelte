@@ -1,33 +1,22 @@
 <script>
   import "$lib/styles.css";
   import Icon from "@iconify/svelte";
-  import { categories, selectedCategories } from "$lib/stores.js";
+  import { selectedCategories, categories } from "$lib/stores.js";
 
-  let categoriesIcons = {
-    history: "mdi:book-open-page-variant",
-    film_and_tv: "mdi:video-film",
-    society_and_culture: "mdi:people",
-    geography: "mdi:globe",
-    arts_and_literature: "mdi:art",
-    science: "ic:round-science",
-    music: "mdi:music",
-    sport_and_leisure: "mdi:soccer",
-    food_and_drink: "mdi:food",
-    general_knowledge: "mdi:dice-6",
+  const categoriesIcons = {
+    1: "ic:round-science",
+    2: "mdi:people",
+    3: "mdi:art",
+    4: "mdi:music",
+    5: "mdi:soccer",
+    6: "mdi:food",
+    7: "mdi:globe",
+    8: "mdi:dice-6",
+    9: "mdi:video-film",
+    10: "mdi:book-open-page-variant",
   };
-  let displayNames = {
-    history: "History",
-    film_and_tv: "Film & TV",
-    society_and_culture: "Society & Culture",
-    geography: "Geography",
-    arts_and_literature: "Arts & Literature",
-    science: "Science",
-    music: "Music",
-    sport_and_leisure: "Sports & Leisure",
-    food_and_drink: "Food & Drink",
-    general_knowledge: "General Knowledge",
-  };
-  let colors = [
+
+  const colors = [
     "#e6c642", // Yellow
     "#f94e4e", // Red
     "#685af5", // Purple
@@ -37,32 +26,36 @@
     "#e857ed", // Pink
     "#56cfef", // Light Blue
     "#4b0082", // Indigo
-    "#ee3f73", // Pink
+    "#ee3f73", // Hot Pink
   ];
-  let currentQuestionIndex = 0;
 
   // Create a map of categories to colors
   let categoryColors = {};
   categories.forEach((category, index) => {
-    categoryColors[category] = colors[index % colors.length];
+    categoryColors[category.category_id] = colors[index % colors.length];
   });
 
   function handleCategoryChange(event) {
-    const category = event.target.value;
-    selectedCategories.update((categories) => {
-      const index = categories.indexOf(category);
+    const categoryId = parseInt(event.target.value, 10); // Parse the ID as an integer
+
+    selectedCategories.update((selected) => {
+      // Find the index of the category in the selected categories array by ID
+      const index = selected.findIndex((cat) => cat.category_id === categoryId);
+
       if (index === -1) {
-        return [...categories, category];
+        // If the category is not found, add it to the selected categories array
+        const categoryToAdd = categories.find(
+          (cat) => cat.category_id === categoryId,
+        );
+        return [...selected, categoryToAdd];
       } else {
-        return categories.filter((cat) => cat !== category);
+        // If the category is found, remove it from the selected categories array
+        return selected.filter((cat) => cat.category_id !== categoryId);
       }
     });
 
     // Update the button's class based on the new selection state
     event.target.classList.toggle("selected");
-
-    // Reset currentQuestionIndex to restart the game
-    currentQuestionIndex = 0;
   }
 </script>
 
@@ -73,23 +66,25 @@
     <div class="categories-grid">
       {#each categories as category}
         <button
-          value={category}
+          value={category.category_id}
           style="background: {$selectedCategories.includes(category)
-            ? categoryColors[category]
+            ? categoryColors[category.category_id]
             : '#7f8c8d'}; outline:.15em solid {categoryColors[
             category
           ]}; overflow: hidden;"
           on:click={handleCategoryChange}
-          class="category-button {$selectedCategories.includes(category)
+          class="category-button {$selectedCategories.includes(
+            category.category,
+          )
             ? 'selected'
             : ''}"
         >
           <Icon
-            icon={categoriesIcons[category]}
+            icon={categoriesIcons[category.category_id]}
             width="2em"
             height="2em"
             style="pointer-events: none;"
-          /><br />{displayNames[category]}
+          /><br />{category.category}
         </button>
       {/each}
     </div>
