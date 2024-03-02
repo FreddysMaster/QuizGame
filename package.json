@@ -15,7 +15,8 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"svelte": "^4.2.7",
 		"sveltekit-superforms": "^2.6.2",
-		"vite": "^5.0.3"
+		"vite": "^5.0.3",
+		"zod": "^3.22.4"
 	},
 	"type": "module",
 	"dependencies": {
@@ -28,7 +29,6 @@
 		"pnpm": "^8.15.4",
 		"svelte-simple-modal": "^1.6.2",
 		"svelte-sound": "^0.6.0",
-		"zo": "^0.0.2",
-		"zod": "^3.22.4"
+		"zo": "^0.0.2"
 	}
 }
