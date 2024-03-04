@@ -1,14 +1,16 @@
 // +page.js
 import { get } from 'svelte/store';
 import { selectedCategories } from "$lib/stores.js";
+import { prisma } from '$lib/server/prisma';
 
-export async function load({ fetch }) {
+export async function load() {
   try {
-    const response = await fetch(`http://localhost:3000/api/questions`);
-    const allQuestions = await response.json();
-
+    const allQuestions = await prisma.questions.findMany()
+    
     // Get the IDs of the selected categories
     const selectedCategoryIds = get(selectedCategories).map(category => category.category_id);
+
+    console.log(selectedCategoryIds);
 
     // Filter questions based on whether their category_id is included in the selectedCategoryIds
     const filteredQuestions = allQuestions.filter(question => selectedCategoryIds.includes(question.category_id));

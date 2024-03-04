@@ -1,7 +1,11 @@
 <script>
   import "$lib/styles.css";
   import Icon from "@iconify/svelte";
-  import { selectedCategories, categories } from "$lib/stores.js";
+  import { selectedCategories } from "$lib/stores.js";
+
+  export let data;
+  const { categories } = data;
+  selectedCategories.set(categories);
 
   const categoriesIcons = {
     1: "ic:round-science",
@@ -41,7 +45,6 @@
     selectedCategories.update((selected) => {
       // Find the index of the category in the selected categories array by ID
       const index = selected.findIndex((cat) => cat.category_id === categoryId);
-
       if (index === -1) {
         // If the category is not found, add it to the selected categories array
         const categoryToAdd = categories.find(
@@ -50,8 +53,8 @@
         return [...selected, categoryToAdd];
       } else {
         // If the category is found, remove it from the selected categories array
-        return selected.filter((cat) => cat.category_id !== categoryId);
-      }
+        return selected.filter((cat) => cat.category_id !== categoryId);    
+        }
     });
 
     // Update the button's class based on the new selection state
