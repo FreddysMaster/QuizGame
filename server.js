@@ -20,7 +20,7 @@ db.connect((err) => {
 app.use(express.json());
 app.use(cors());
 
-// Existing endpoint for fetching questions
+// endpoint for fetching questions
 app.get('/api/questions', (req, res) => {
   const sqlQuery = 'SELECT * FROM questions';
 
@@ -44,7 +44,7 @@ app.get('/api/questions', (req, res) => {
   });
 });
 
-// New endpoint for fetching categories
+// endpoint for fetching categories
 app.get('/api/categories', (req, res) => {
   const sqlQuery = 'SELECT * FROM categories';
 
@@ -60,6 +60,28 @@ app.get('/api/categories', (req, res) => {
     }));
 
     res.json(categories);
+  });
+});
+
+// endpoint for fetching questions
+app.get('/api/users', (req, res) => {
+  const sqlQuery = 'SELECT * FROM users';
+
+  db.query(sqlQuery, (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    
+    const users = results.map(users => ({
+      user_id: users.user_id,
+      username: users.username,
+      password: users.password,
+      highscore: users.highscore,
+      user_type: users.user_type,
+    }));
+
+    res.json(users);
   });
 });
 
