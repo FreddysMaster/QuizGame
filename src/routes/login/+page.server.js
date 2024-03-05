@@ -1,11 +1,16 @@
 import { z } from 'zod';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { Argon2id } from "oslo/password";
 import { prisma } from '$lib/server/prisma';
 
-const schema = z.object({
+const loginSchema = z.object({
+  username: z.string().min(1).max(64).trim(),
+  password: z.string().min(1).max(64).trim()
+});
+
+const registerSchema = z.object({
   username: z.string().min(1).max(64).trim(),
   email: z.string().min(1).max(64).email(),
   password: z.string().min(1).max(64).trim(),
@@ -14,31 +19,47 @@ const schema = z.object({
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = (async () => {
-  const form = await superValidate(zod(schema));
+const loginForm = await superValidate(zod(loginSchema));
+const registerForm = await superValidate(zod(registerSchema));
 
-  return { form };
+  return { loginForm, registerForm };
 });
 
 export const actions = {
-  default: async ({ request }) => {
-    const form = await superValidate(request, zod(schema));
+  login: async ({ request }) => {
+    const loginForm = await superValidate(request, zod(loginSchema));
+    console.log(loginForm);
 
-    if (!form.valid) {
-      return fail(400, { form });
+    if (!loginForm.valid) return fail(400, { loginForm });
+
+    // TODO: Login user
+    return message(loginForm, 'Login form submitted');
+  },
+  register: async ({ request }) => {
+    const registerForm = await superValidate(request, zod(registerSchema));
+    console.log(registerForm);
+
+    if (!registerForm.valid) {
+      return fail(400, { registerForm });
+    }
+
+    if (registerForm.data.password != registerForm.data.confirmPassword){ 
+      console.log("FAIL");
+      return fail(504, { message: 'Passwords do not match' })
     }
 
     try {
-      const hashedPassword = await new Argon2id().hash(form.data.password);
+      const hashedPassword = await new Argon2id().hash(registerForm.data.password);
 
       await prisma.users.create({
         data: {
-          username: form.data.username,
-          email: form.data.email,
+          username: registerForm.data.username,
+          email: registerForm.data.email,
           password: hashedPassword,
         },
       })
 
-      return { form };
+      return { registerForm };
     } catch (err) {
       console.error(err);
       return fail(500, { message: 'Could not create the user.' })

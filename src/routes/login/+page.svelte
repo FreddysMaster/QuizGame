@@ -6,7 +6,18 @@
     export let data;
 
     let showModal = true;
-    const { form, enhance } = superForm(data.form);
+    const { form, errors, enhance, message } = superForm(data.loginForm, {
+        resetForm: true,
+    });
+
+    const {
+        form: registerForm,
+        errors: registerErrors,
+        enhance: registerEnhance,
+        message: registerMessage,
+    } = superForm(data.registerForm, {
+        resetForm: true,
+    });
 </script>
 
 <main>
@@ -14,77 +25,11 @@
         <div class="picture"></div>
         <div class="container-contents">
             {#if showModal}
-                <form method="POST" use:enhance>
+                <form method="POST" action="?/login" use:enhance>
                     <div in:fade={{ duration: 500 }}>
                         <h2>Login</h2>
                         <div class="input-container">
-                            <Icon
-                                icon="fa-solid:envelope"
-                                style="
-              padding: 10px;
-              background-color: #eeeeee;
-              height: inherit;
-              color: #424953;
-              min-width: .5em;
-              text-align: center;
-              border-right: 1px solid #a9a9a9;"
-                            />
-                            <input
-                                class="input-field"
-                                name="email"
-                                type="email"
-                                placeholder="Enter your email"
-                            />
-                        </div>
-                        <div class="input-container">
-                            <Icon
-                                icon="fa-solid:lock"
-                                style="
-              padding: 10px;
-              background-color: #eeeeee;
-              height: inherit;
-              color: #424953;
-              min-width: .5em;
-              text-align: center;
-              border-right: 1px solid #a9a9a9;"
-                            />
-                            <input
-                                class="input-field"
-                                name="password"
-                                type="password"
-                                placeholder="Enter your password"
-                            />
-                        </div>
-                        <div class="remember-container">
-                            <input type="checkbox" id="rememberme" />
-                            <label for="rememberme">Remember Me</label>
-                        </div>
-                        <div class="login-container">
-                            <button
-                                class="alt-button"
-                                on:click|preventDefault={() =>
-                                    (showModal = false)}>Register</button
-                            >
-                            <button type="submit">Login</button>
-                        </div>
-                    </div>
-                </form>
-            {:else}
-                <form method="POST" use:enhance>
-                    <div in:fade={{ duration: 500 }}>
-                        <h2>Register</h2>
-                        <div class="input-container">
-                            <Icon
-                                icon="fa-solid:user"
-                                style="
-              padding: 10px;
-              background-color: #eeeeee;
-              height: inherit;
-              color: #424953;
-              min-width: .5em;
-              text-align: center;
-              border-right: 1px solid #a9a9a9;"
-                            />
+                            <label for="username">Username</label>
                             <input
                                 class="input-field"
                                 name="username"
@@ -94,37 +39,7 @@
                             />
                         </div>
                         <div class="input-container">
-                            <Icon
-                                icon="fa-solid:envelope"
-                                style="
-              padding: 10px;
-              background-color: #eeeeee;
-              height: inherit;
-              color: #424953;
-              min-width: .5em;
-              text-align: center;
-              border-right: 1px solid #a9a9a9;"
-                            />
-                            <input
-                                class="input-field"
-                                name="email"
-                                type="email"
-                                placeholder="Enter your email"
-                                bind:value={$form.email}
-                            />
-                        </div>
-                        <div class="input-container">
-                            <Icon
-                                icon="fa-solid:lock"
-                                style="
-              padding: 10px;
-              background-color: #eeeeee;
-              height: inherit;
-              color: #424953;
-              min-width: .5em;
-              text-align: center;
-              border-right: 1px solid #a9a9a9;"
-                            />
+                            <label for="password">Password</label>
                             <input
                                 class="input-field"
                                 name="password"
@@ -133,34 +48,68 @@
                                 bind:value={$form.password}
                             />
                         </div>
+                        <div class="remember-container">
+                            <input type="checkbox" id="rememberme" />
+                            <label for="rememberme">Remember Me</label>
+                        </div>
+                        <button
+                            class="alt-button"
+                            on:click|preventDefault={() => (showModal = false)}
+                            >Register</button
+                        >
+                        <button type="submit">Login</button>
+                    </div>
+                </form>
+            {:else}
+                <form method="POST" action="?/register" use:registerEnhance>
+                    <div in:fade={{ duration: 500 }}>
+                        <h2>Register</h2>
                         <div class="input-container">
-                            <Icon
-                                icon="fa-solid:lock"
-                                style="
-              padding: 10px;
-              background-color: #eeeeee;
-              height: inherit;
-              color: #424953;
-              min-width: .5em;
-              text-align: center;
-              border-right: 1px solid #a9a9a9;"
+                            <label for="username">Username</label>
+                            <input
+                                class="input-field"
+                                name="username"
+                                type="text"
+                                placeholder="Enter your username"
+                                bind:value={$registerForm.username}
                             />
+                        </div>
+                        <div class="input-container">
+                            <label for="email">Email</label>
+                            <input
+                                class="input-field"
+                                name="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                bind:value={$registerForm.email}
+                            />
+                        </div>
+                        <div class="input-container">
+                            <label for="password">Password</label>
                             <input
                                 class="input-field"
                                 name="password"
                                 type="password"
-                                placeholder="Confirm your password"
-                                bind:value={$form.confirmPassword}
+                                placeholder="Enter your password"
+                                bind:value={$registerForm.password}
                             />
                         </div>
-                        <div class="register-container">
-                            <button
-                                class="alt-button"
-                                on:click|preventDefault={() =>
-                                    (showModal = true)}>Login</button
-                            >
-                            <button type="submit">Register</button>
+                        <div class="input-container">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input
+                                class="input-field"
+                                name="confirmPassword"
+                                type="password"
+                                placeholder="Confirm your password"
+                                bind:value={$registerForm.confirmPassword}
+                            />
                         </div>
+                        <button
+                            class="alt-button"
+                            on:click|preventDefault={() => (showModal = true)}
+                            >Login</button
+                        >
+                        <button type="submit">Register</button>
                     </div>
                 </form>
             {/if}
@@ -213,22 +162,11 @@
         border-radius: 0px 10px 10px 0px;
     }
 
-    .login-container {
-        justify-content: space-around;
-    }
-
-    .register-container {
-        justify-content: space-around;
-    }
-
     /* Style the input container */
     .input-container {
-        display: flex;
         width: 100%;
         margin-bottom: 1em;
-        border-radius: 5px;
-        border: 1px solid #a9a9a9;
-        overflow: hidden;
+        border: none;
     }
 
     /* Style the input fields */
@@ -237,6 +175,7 @@
         padding: 1em;
         outline: none;
         border: none;
+        border-radius: 5px;
     }
 
     /* Style the login button */
