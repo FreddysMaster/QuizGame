@@ -2,8 +2,7 @@
     import "$lib/styles.css";
     import { fade } from "svelte/transition";
     import Icon from "@iconify/svelte";
-    import { superForm } from 'sveltekit-superforms';
-    import SuperDebug from 'sveltekit-superforms';
+    import { superForm } from "sveltekit-superforms";
     export let data;
 
     let showModal = true;
@@ -12,8 +11,7 @@
 
 <main>
     <div class="container">
-        <div class="picture">
-        </div>
+        <div class="picture"></div>
         <div class="container-contents">
             {#if showModal}
                 <form method="POST" use:enhance>
@@ -72,7 +70,6 @@
                     </div>
                 </form>
             {:else}
-            <SuperDebug data={$form} />
                 <form method="POST" use:enhance>
                     <div in:fade={{ duration: 500 }}>
                         <h2>Register</h2>
@@ -136,6 +133,26 @@
                                 bind:value={$form.password}
                             />
                         </div>
+                        <div class="input-container">
+                            <Icon
+                                icon="fa-solid:lock"
+                                style="
+              padding: 10px;
+              background-color: #eeeeee;
+              height: inherit;
+              color: #424953;
+              min-width: .5em;
+              text-align: center;
+              border-right: 1px solid #a9a9a9;"
+                            />
+                            <input
+                                class="input-field"
+                                name="password"
+                                type="password"
+                                placeholder="Confirm your password"
+                                bind:value={$form.confirmPassword}
+                            />
+                        </div>
                         <div class="register-container">
                             <button
                                 class="alt-button"
@@ -152,9 +169,9 @@
 </main>
 
 <style>
-  :root {
-    background-color: var(--background-color);
-  }
+    :root {
+        background-color: var(--background-color);
+    }
     h2 {
         margin-top: 0;
     }

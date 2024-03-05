@@ -1,5 +1,4 @@
 import { prisma } from '$lib/server/prisma';
-import { selectedCategories } from "$lib/stores.js";
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {

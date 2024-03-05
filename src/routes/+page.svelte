@@ -53,10 +53,9 @@
         return [...selected, categoryToAdd];
       } else {
         // If the category is found, remove it from the selected categories array
-        return selected.filter((cat) => cat.category_id !== categoryId);    
-        }
+        return selected.filter((cat) => cat.category_id !== categoryId);
+      }
     });
-
     // Update the button's class based on the new selection state
     event.target.classList.toggle("selected");
   }
