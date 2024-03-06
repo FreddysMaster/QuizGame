@@ -1,22 +1,25 @@
 <script>
     import "$lib/styles.css";
+    import { loginSchema, registerSchema } from '$lib/schemas/zodschemas.js';
     import { fade } from "svelte/transition";
-    import Icon from "@iconify/svelte";
     import { superForm } from "sveltekit-superforms";
+    import { zodClient } from 'sveltekit-superforms/adapters';
     export let data;
 
     let showModal = true;
-    const { form, errors, enhance, message } = superForm(data.loginForm, {
+    const { form, errors, enhance } = superForm(data.loginForm, {
         resetForm: true,
+        validators: zodClient(loginSchema),
     });
 
     const {
         form: registerForm,
         errors: registerErrors,
         enhance: registerEnhance,
-        message: registerMessage,
     } = superForm(data.registerForm, {
         resetForm: true,
+        validators: zodClient(registerSchema),
+        validationMethod: "submit",
     });
 </script>
 
@@ -37,6 +40,9 @@
                                 placeholder="Enter your username"
                                 bind:value={$form.username}
                             />
+                            {#if $errors.username}
+                                <small>{$errors.username}</small>
+                            {/if}
                         </div>
                         <div class="input-container">
                             <label for="password">Password</label>
@@ -47,6 +53,9 @@
                                 placeholder="Enter your password"
                                 bind:value={$form.password}
                             />
+                            {#if $errors.password}
+                                <small>{$errors.password}</small>
+                            {/if}
                         </div>
                         <div class="remember-container">
                             <input type="checkbox" id="rememberme" />
@@ -73,6 +82,9 @@
                                 placeholder="Enter your username"
                                 bind:value={$registerForm.username}
                             />
+                            {#if $registerErrors.username}
+                                <small>{$registerErrors.username}</small>
+                            {/if}
                         </div>
                         <div class="input-container">
                             <label for="email">Email</label>
@@ -83,6 +95,9 @@
                                 placeholder="Enter your email"
                                 bind:value={$registerForm.email}
                             />
+                            {#if $registerErrors.email}
+                                <small>{$registerErrors.email}</small>
+                            {/if}
                         </div>
                         <div class="input-container">
                             <label for="password">Password</label>
@@ -93,9 +108,13 @@
                                 placeholder="Enter your password"
                                 bind:value={$registerForm.password}
                             />
+                            {#if $registerErrors.password}
+                                <small>{$registerErrors.password}</small>
+                            {/if}
                         </div>
                         <div class="input-container">
-                            <label for="confirmPassword">Confirm Password</label>
+                            <label for="confirmPassword">Confirm Password</label
+                            >
                             <input
                                 class="input-field"
                                 name="confirmPassword"
@@ -103,6 +122,9 @@
                                 placeholder="Confirm your password"
                                 bind:value={$registerForm.confirmPassword}
                             />
+                            {#if $registerErrors.confirmPassword}
+                                <small>{$registerErrors.confirmPassword}</small>
+                            {/if}
                         </div>
                         <button
                             class="alt-button"
@@ -125,6 +147,10 @@
         margin-top: 0;
     }
 
+    small {
+        color: #ff5861;
+    }
+
     .remember-container {
         display: flex;
         align-items: start;
@@ -138,7 +164,7 @@
         padding: 1em;
         border-radius: 10px;
         height: calc(100vh - 150px);
-        width: 75%;
+
     }
 
     .picture {
@@ -164,6 +190,7 @@
 
     /* Style the input container */
     .input-container {
+        display: grid;
         width: 100%;
         margin-bottom: 1em;
         border: none;
@@ -171,7 +198,7 @@
 
     /* Style the input fields */
     .input-field {
-        width: 100%;
+        width: inherit;
         padding: 1em;
         outline: none;
         border: none;
