@@ -1,32 +1,52 @@
-import { z } from 'zod';
+import { loginSchema, registerSchema } from '$lib/schemas/zodschemas.js';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { fail } from '@sveltejs/kit';
-
-const schema = z.object({
-  username: z.string().min(1).max(64).trim(),
-  email: z.string().min(1).max(64).email(),
-  password: z.string().min(1).max(64).trim()
-});
+import { fail, redirect } from '@sveltejs/kit';
+import { Argon2id } from "oslo/password";
+import { prisma } from '$lib/server/prisma';
 
 /** @type {import('./$types').PageServerLoad} */
 export const load = (async () => {
-    const form = await superValidate(zod(schema));
-  
-    return { form };
-  });
 
-  export const actions = {
-    default: async ({ request }) => {
-      const form = await superValidate(request, zod(schema));
-      console.log(form);
-  
-      if (!form.valid) {
-        return fail(400, { form });
-      }
-  
-      // TODO: Do something with the validated form.data
-  
-      return { form };
+  const loginForm = await superValidate(zod(loginSchema));
+  const registerForm = await superValidate(zod(registerSchema));
+
+  return { loginForm, registerForm };
+});
+
+export const actions = {
+  login: async ({ request }) => {
+    const loginForm = await superValidate(request, zod(loginSchema));
+    console.log(loginForm);
+
+    if (!loginForm.valid) return fail(400, { loginForm });
+
+    // TODO: Login user
+    return message(loginForm, 'Login form submitted');
+  },
+  register: async ({ request }) => {
+    const registerForm = await superValidate(request, zod(registerSchema));
+
+    if (!registerForm.valid) {
+      return fail(400, { registerForm });
     }
-  };
+
+    try {
+      const hashedPassword = await new Argon2id().hash(registerForm.data.password);
+
+      await prisma.users.create({
+        data: {
+          username: registerForm.data.username,
+          email: registerForm.data.email,
+          password: hashedPassword,
+        },
+      })
+
+      redirect(302, "/");
+
+    } catch (err) {
+      console.error(err);
+      return fail(500, { message: 'Could not create the user.' })
+    }
+  }
+};
