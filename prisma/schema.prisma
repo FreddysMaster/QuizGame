@@ -40,20 +40,13 @@ model questions {
 
 model users {
   user_id     Int              @id @default(autoincrement())
-  username    String           @db.VarChar(255)
+  username    String           @db.VarChar(255) @unique
   email       String           @unique(map: "email") @db.VarChar(255)
   password    String           @db.VarChar(255)
   highscore   Int?             @default(0)
+  userAuthToken String @unique
   user_type   users_user_type? @default(user)
   leaderboard leaderboard[]
-  sessions    session[]
-}
-
-model session {
-  session_id String   @id
-  expiresAt  DateTime
-  user_id    Int
-  user       users    @relation(references: [user_id], fields: [user_id], onDelete: Cascade)
 }
 
 enum users_user_type {

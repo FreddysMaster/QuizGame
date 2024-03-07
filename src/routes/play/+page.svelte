@@ -1,14 +1,14 @@
 <script>
   // @ts-nocheck
-  import { score } from "$lib/stores.js";
-  import "$lib/styles.css";
-  import Icon from "@iconify/svelte";
-  import { Sound } from "svelte-sound";
-  import correctsound from "$lib/assets/correctsound.mp3";
-  import incorrectsound from "$lib/assets/wrongsound.mp3";
-  import { onMount } from "svelte";
-  import { goto } from "$app/navigation";
-  import { selectedCategories } from "$lib/stores.js";
+  import '$lib/styles.css';
+  import { score } from '$lib/stores.js';
+  import correctsound from '$lib/assets/correctsound.mp3';
+  import incorrectsound from '$lib/assets/wrongsound.mp3';
+  import Icon from '@iconify/svelte';
+  import { Sound } from 'svelte-sound';
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { selectedCategories } from '$lib/stores.js';
 
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);

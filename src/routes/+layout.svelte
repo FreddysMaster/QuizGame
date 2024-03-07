@@ -1,12 +1,16 @@
 <script>
   import "$lib/styles.css";
+  import { page } from '$app/stores';
 </script>
 
 <main>
   <nav>
+
+    {#if !$page.data.user}
     <a href="/login">
       <button class="login-button">Login</button>
     </a>
+    {/if}
   </nav>
   <slot />
 </main>

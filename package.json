@@ -24,6 +24,8 @@
 	"dependencies": {
 		"@prisma/client": "^5.10.2",
 		"@trivia-api/fetch": "^1.12.0",
+		"axios": "^1.6.7",
+		"bcrypt": "^5.1.1",
 		"concurrently": "^8.2.2",
 		"mysql": "^2.18.1",
 		"oslo": "^1.1.3",

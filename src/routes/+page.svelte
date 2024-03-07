@@ -1,7 +1,7 @@
 <script>
-  import "$lib/styles.css";
-  import Icon from "@iconify/svelte";
-  import { selectedCategories } from "$lib/stores.js";
+  import '$lib/styles.css';
+  import Icon from '@iconify/svelte';
+  import { selectedCategories } from '$lib/stores.js';
 
   export let data;
   const { categories } = data;

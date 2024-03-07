@@ -1,8 +1,8 @@
 <script>
-    import "$lib/styles.css";
+    import '$lib/styles.css';
     import { loginSchema, registerSchema } from '$lib/schemas/zodschemas.js';
-    import { fade } from "svelte/transition";
-    import { superForm } from "sveltekit-superforms";
+    import { fade } from 'svelte/transition';
+    import { superForm } from 'sveltekit-superforms';
     import { zodClient } from 'sveltekit-superforms/adapters';
     export let data;
 

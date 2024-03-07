@@ -1,7 +1,7 @@
 <script>
     // @ts-nocheck
-    import "$lib/styles.css";
-    import { score } from "$lib/stores.js";
+    import '$lib/styles.css';
+    import { score } from '$lib/stores.js';
 </script>
 
 <main>
