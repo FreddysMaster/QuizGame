@@ -6,8 +6,10 @@ import bcrypt from 'bcrypt'
 import { prisma } from '$lib/server/prisma';
 
 /** @type {import('./$types').PageServerLoad} */
-export const load = (async () => {
-
+export const load = (async ({ locals }) => {
+  if (locals.user) {
+    redirect(302, '/');
+  }
   const loginForm = await superValidate(zod(loginSchema));
   const registerForm = await superValidate(zod(registerSchema));
 

@@ -5,11 +5,22 @@
 
 <main>
   <nav>
-
     {#if !$page.data.user}
     <a href="/login">
       <button class="login-button">Login</button>
     </a>
+    {:else if $page.data.user.user_type == "admin"}
+    <a href="/profile">
+      <button class="login-button">Profile</button>
+    </a>
+    <a href="/admin">
+      <button class="login-button">Admin</button>
+    </a>
+    {:else}
+
+    <a href="/profile">
+      <button class="login-button">Profile</button>
+    </a>    
     {/if}
   </nav>
   <slot />
