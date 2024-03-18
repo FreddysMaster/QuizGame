@@ -8,12 +8,14 @@
   import incorrectsound from "$lib/assets/wrongsound.mp3";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
+  import { selectedCategories } from "$lib/stores.js";
 
   const correct_sound = new Sound(correctsound);
   const incorrect_sound = new Sound(incorrectsound);
 
   export let data;
-  const questions = data.questions;
+  let questions = data.questions;
+  console.log($selectedCategories);
   let time = 202.0;
   let currentQuestionIndex = 0;
   $score = 0;
@@ -28,6 +30,28 @@
       }
     }, 10);
   });
+
+  // Function to shuffle an array
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+
+  // Get the IDs of the selected categories
+  const selectedCategoryIds = $selectedCategories.map(
+    (category) => category.category_id,
+  );
+
+  // Filter questions based on whether their category_id is included in the selectedCategoryIds
+  const filteredQuestions = questions.filter((question) =>
+    selectedCategoryIds.includes(question.category_id),
+  );
+
+  // Shuffle the questions
+  questions = shuffleArray(filteredQuestions);
 
   function handleClick(answer) {
     if (answer === questions[currentQuestionIndex].correctAnswer) {

@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model categories {
+  category_id Int         @id @default(autoincrement())
+  category    String      @db.VarChar(255)
+  questions   questions[]
+}
+
+model leaderboard {
+  rank     Int       @id @default(autoincrement())
+  username String    @db.VarChar(255)
+  score    Int
+  time     DateTime? @db.Date
+  user_id  Int
+  user     users     @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id], map: "user_id")
+}
+
+model questions {
+  question_id   Int        @id @default(autoincrement())
+  question      String     @db.Text
+  answer1       String     @db.VarChar(255)
+  answer2       String     @db.VarChar(255)
+  answer3       String     @db.VarChar(255)
+  answer4       String     @db.VarChar(255)
+  correctAnswer String     @db.VarChar(255)
+  category_id   Int
+  category      categories @relation(fields: [category_id], references: [category_id])
+
+  @@index([category_id], map: "category_id")
+}
+
+model users {
+  user_id     Int              @id @default(autoincrement())
+  username    String           @db.VarChar(255)
+  email       String           @unique(map: "email") @db.VarChar(255)
+  password    String           @db.VarChar(255)
+  highscore   Int?             @default(0)
+  user_type   users_user_type? @default(user)
+  leaderboard leaderboard[]
+  sessions    session[]
+}
+
+model session {
+  session_id String   @id
+  expiresAt  DateTime
+  user_id    Int
+  user       users    @relation(references: [user_id], fields: [user_id], onDelete: Cascade)
+}
+
+enum users_user_type {
+  user
+  admin
+}
