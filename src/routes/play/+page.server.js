@@ -4,9 +4,10 @@ import { prisma } from '$lib/server/prisma';
 export async function load() {
   try {
     const questions = await prisma.questions.findMany();
+    const categories = await prisma.categories.findMany();
 
     return {
-      questions
+      questions, categories
     };
   } catch (error) {
     console.error("Error fetching questions:", error);

@@ -34,7 +34,7 @@ Before you are ready to play the Quiz Game, you need to populate the SQL Databas
 #### Running the Server
 
 After you followed all of the previous steps above you should be able to run a local server by running the command:
-```npm run dev```
+```npm run dev:both```
 
 This will setup the server at the web address: http://localhost:5173
 

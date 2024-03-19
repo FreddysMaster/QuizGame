@@ -1,22 +1,24 @@
 <script>
   // @ts-nocheck
   import { score } from "$lib/stores.js";
-  import "$lib/styles.css";
+  import "$lib/app.css";
   import Icon from "@iconify/svelte";
   import { Sound } from "svelte-sound";
-  import correctsound from "$lib/assets/correctsound.mp3";
-  import incorrectsound from "$lib/assets/wrongsound.mp3";
+  import correctSound from "$lib/assets/correctsound.mp3";
+  import incorrectSound from "$lib/assets/wrongsound.mp3";
+  import backgroundMusic from "$lib/assets/cipher.mp3";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { selectedCategories } from "$lib/stores.js";
+  import { selectedCategories, categoriesIcons, colors } from "$lib/stores.js";
 
-  const correct_sound = new Sound(correctsound);
-  const incorrect_sound = new Sound(incorrectsound);
+  const correct_sound = new Sound(correctSound);
+  const incorrect_sound = new Sound(incorrectSound);
 
   export let data;
   let questions = data.questions;
+  let categories = data.categories;
   console.log($selectedCategories);
-  let time = 202.0;
+  let time = 99.0;
   let currentQuestionIndex = 0;
   $score = 0;
   let answers = [];
@@ -24,11 +26,11 @@
   // This interval updates every 100 milliseconds to provide subsecond precision
   onMount(() => {
     setInterval(() => {
-      time -= 0.01;
+      time -= 1;
       if (time < 0) {
         time = 0;
       }
-    }, 10);
+    }, 1000);
   });
 
   // Function to shuffle an array
@@ -82,122 +84,74 @@
 
 <main>
   {#if questions.length > 0 && currentQuestionIndex < questions.length}
-    <div class="backDiv">
-      <a href="/">
-        <button class="backButton"
-          ><Icon
-            icon="mingcute:arrow-left-fill"
-            width="1.5em"
-            height="1.5em"
-          /></button
-        >
-      </a>
-    </div>
-    <div class="currentScore">
-      <h3>Score: {$score}</h3>
-      <h3>Time: {time.toFixed(2)}</h3>
-    </div>
-    <h2 class="question">{questions[currentQuestionIndex].question}</h2>
-    <div class="grid">
-      {#if answers.length > 0}
-        {#each answers as answer, index}
-          <button on:click|preventDefault={() => handleClick(answer)}>
-            <span class="answer-label"
-              >{`${String.fromCharCode(65 + index)}. `}</span
+    <a href="/">
+      <button class="btn btn-square m-2">
+        <Icon icon="mingcute:arrow-left-fill" width="2em" height="2em" />
+      </button>
+    </a>
+
+    <div
+      class="h-[calc(100vh-16rem)] w-screen flex flex-col justify-center items-center"
+    >
+      <div class="relative flex justify-center items-center w-full">
+        <div class="absolute bg-primary rounded-full shadow-inner bottom-[-10px] w-3/12">
+          <h3 class="text-xl font-bold m-2 pl-2 text-white">Score: {$score}</h3>
+          <div class="relative flex justify-center items-center">
+            <h3
+              class="absolute text-xl font-bold rounded-full bg-white h-16 w-16 flex items-center justify-center bottom-0 shadow-inner text-black"
             >
-            {answer}
-          </button>
-        {/each}
-      {/if}
+              {time}s
+            </h3>
+          </div>
+        </div>
+      </div>
+      <h2
+        class="bg-secondary p-4 inset-0 rounded-lg w-2/4 h-32 flex justify-center items-center text-2xl text-white text-center"
+      >
+        {questions[currentQuestionIndex].question}
+      </h2>
+      <div class="flex flex-col gap-3 w-2/4 my-4">
+        <div
+          class="fixed left-0 top-1/2 transform -translate-y-1/2 m-2 rounded-md bg-accent"
+        >
+          <div class="grid grid-cols-2 m-2">
+            {#each categories as category, index}
+              <Icon
+                class="pointer-events-none m-1 p-1 rounded-md"
+                style="background-color: {$selectedCategories.find(
+                  (cat) => cat.category === category.category,
+                )
+                  ? $colors[index]
+                  : 'none'};"
+                icon={$categoriesIcons[category.category_id]}
+                color="white"
+                width="2em"
+                height="2em"
+              />
+            {/each}
+          </div>
+        </div>
+        {#if answers.length > 0}
+          {#each answers as answer, index}
+            <button
+              class="btn btn-primary text-lg min-h-16 text-white justify-start"
+              on:click|preventDefault={() => handleClick(answer)}
+            >
+              <span
+                class="flex flex-col items-center justify-center w-10 h-10 p-2 rounded-full bg-white text-primary"
+                >{`${String.fromCharCode(65 + index)}`}</span
+              >
+              <p>{answer}</p>
+            </button>
+          {/each}
+        {/if}
+      </div>
     </div>
   {/if}
 </main>
 
 <style>
-  :root {
-    background-color: var(--background-color);
-  }
-
-  main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-  }
-
   h2 {
     font-family: "Permanent Marker", cursive;
-    color: var(--button-text-color);
-  }
-
-  h3 {
-    padding: 0 1em 0 1em;
-  }
-
-  .currentScore {
-    display: flex;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    width: 45%;
-  }
-
-  .question {
-    background-color: var(--secondary-color);
-    padding: 1em;
-    inset: 0;
-    border-radius: 10px;
-    width: calc(45% - 2em);
-    font-size: 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40%;
-  }
-
-  button {
-    background: var(--primary-color);
-    color: var(--button-text-color);
-    border: 0.25em solid var(--border-color);
-    border-radius: 10px;
-    font-size: larger;
-    padding: 1em;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    text-align: center;
-  }
-
-  .backDiv {
-    position: absolute;
-    left: 0;
-    top: 0;
-    padding: 0.5em;
-  }
-
-  .backButton {
-    display: flex;
-    padding: 0.5em;
-    align-content: center;
-    background: white;
-    border-style: none;
-    color: var(--text-color);
-  }
-
-  .backButton:hover {
-    transform: scale(1.05);
-    background: white;
-  }
-
-  button:hover {
-    background: var(--hover-color);
-  }
-
-  button:disabled {
-    background: var(--disabled-color);
-    cursor: not-allowed;
   }
 </style>
