@@ -1,15 +1,20 @@
 <script>
-    import '$lib/styles.css';
-    import { loginSchema, registerSchema } from '$lib/schemas/zodschemas.js';
-    import { fade } from 'svelte/transition';
-    import { superForm } from 'sveltekit-superforms';
-    import { zodClient } from 'sveltekit-superforms/adapters';
+    import "$lib/app.css";
+    import { loginSchema, registerSchema } from "$lib/schemas/zodschemas.js";
+    import { fade } from "svelte/transition";
+    import { superForm } from "sveltekit-superforms";
+    import { zodClient } from "sveltekit-superforms/adapters";
     export let data;
 
     let showModal = true;
-    const { form, errors, enhance } = superForm(data.loginForm, {
+    const {
+        form: loginForm,
+        errors: loginErrors,
+        enhance: loginEnhance,
+    } = superForm(data.loginForm, {
         resetForm: true,
         validators: zodClient(loginSchema),
+        validationMethod: "submit",
     });
 
     const {
@@ -24,215 +29,179 @@
 </script>
 
 <main>
-    <div class="container">
-        <div class="picture"></div>
-        <div class="container-contents">
+    <div class="flex flex-col items-center justify-center h-[calc(100vh-4rem)]  bg-slate-100">
+        <div class="flex flex-col items-center justify-center h-[calc(100vh-4rem)] w-2/6 my-24 rounded-lg bg-white">
             {#if showModal}
-                <form method="POST" action="?/login" use:enhance>
+            <h1 class="text-3xl font-bold top-0 text-black">Login</h1>
+                <form
+                    class="w-full max-w-sm"
+                    method="POST"
+                    action="?/login"
+                    use:loginEnhance
+                >
                     <div in:fade={{ duration: 500 }}>
-                        <h2>Login</h2>
-                        <div class="input-container">
-                            <label for="username">Username</label>
+                        <div class="form-control w-full max-w-sm">
+                            <label for="username" class="label">
+                                <span class="label-text font-bold">Username</span>
+                            </label>
                             <input
-                                class="input-field"
-                                name="username"
                                 type="text"
+                                name="username"
+                                class="input input-primary w-full max-w-sm{$loginErrors.username
+                                    ? 'input-error'
+                                    : 'input-bordered'}"
                                 placeholder="Enter your username"
-                                bind:value={$form.username}
+                                bind:value={$loginForm.username}
                             />
-                            {#if $errors.username}
-                                <small>{$errors.username}</small>
-                            {/if}
+                            <label for="username" class="label">
+                                {#if $loginErrors.username}
+                                    <span class="label-text-alt text-error"
+                                        >{$loginErrors.username}</span
+                                    >
+                                {/if}
+                            </label>
                         </div>
-                        <div class="input-container">
-                            <label for="password">Password</label>
+                        <div class="form-control w-full max-w-sm">
+                            <label for="password" class="label">
+                                <span class="label-text font-bold">Password</span>
+                            </label>
                             <input
-                                class="input-field"
-                                name="password"
                                 type="password"
+                                name="password"
+                                class="input input-primary w-full max-w-sm {$loginErrors.password
+                                    ? 'input-error'
+                                    : 'input-bordered'}"
                                 placeholder="Enter your password"
-                                bind:value={$form.password}
+                                bind:value={$loginForm.password}
                             />
-                            {#if $errors.password}
-                                <small>{$errors.password}</small>
-                            {/if}
+                            <label for="password" class="label">
+                                {#if $loginErrors.password}
+                                    <span class="label-text-alt text-error"
+                                        >{$loginErrors.password}</span
+                                    >
+                                {/if}
+                            </label>
                         </div>
-                        <div class="remember-container">
-                            <input type="checkbox" id="rememberme" />
-                            <label for="rememberme">Remember Me</label>
+                        <div class="flex justify-center mt-4 space-x-12 ">
+                            <button
+                                class="btn w-24 "
+                                on:click|preventDefault={() =>
+                                    (showModal = false)}>Register</button
+                            >
+                            <button
+                                class="btn w-24 btn-primary text-white"
+                                type="submit">Login</button
+                            >
                         </div>
-                        <button
-                            class="alt-button"
-                            on:click|preventDefault={() => (showModal = false)}
-                            >Register</button
-                        >
-                        <button type="submit">Login</button>
                     </div>
                 </form>
             {:else}
-                <form method="POST" action="?/register" use:registerEnhance>
+            <h1 class="text-3xl font-bold">Register</h1>
+                <form
+                    class="w-full max-w-sm"
+                    method="POST"
+                    action="?/register"
+                    use:registerEnhance
+                >
                     <div in:fade={{ duration: 500 }}>
-                        <h2>Register</h2>
-                        <div class="input-container">
-                            <label for="username">Username</label>
+                        <div class="form-control w-full max-w-sm">
+                            <label for="username" class="label">
+                                <span class="label-text font-bold">Username</span>
+                            </label>
                             <input
-                                class="input-field"
-                                name="username"
                                 type="text"
+                                name="username"
+                                class="input input-primary w-screen max-w-sm {$registerErrors.username
+                                    ? 'input-error'
+                                    : 'input-bordered'}"
                                 placeholder="Enter your username"
                                 bind:value={$registerForm.username}
                             />
-                            {#if $registerErrors.username}
-                                <small>{$registerErrors.username}</small>
-                            {/if}
+                            <label for="username" class="label">
+                                {#if $registerErrors.username}
+                                    <span class="label-text-alt text-error"
+                                        >{$registerErrors.username}</span
+                                    >
+                                {/if}
+                            </label>
                         </div>
-                        <div class="input-container">
-                            <label for="email">Email</label>
+                        <div class="form-control w-full max-w-sm">
+                            <label for="email" class="label">
+                                <span class="label-text font-bold">Email</span>
+                            </label>
                             <input
-                                class="input-field"
+                                type="text"
                                 name="email"
-                                type="email"
+                                class="input input-primary w-full max-w-sm {$registerErrors.email
+                                    ? 'input-error'
+                                    : 'input-bordered'}"
                                 placeholder="Enter your email"
                                 bind:value={$registerForm.email}
                             />
-                            {#if $registerErrors.email}
-                                <small>{$registerErrors.email}</small>
-                            {/if}
+                            <label for="email" class="label">
+                                {#if $registerErrors.email}
+                                    <span class="label-text-alt text-error"
+                                        >{$registerErrors.email}</span
+                                    >
+                                {/if}
+                            </label>
                         </div>
-                        <div class="input-container">
-                            <label for="password">Password</label>
+                        <div class="form-control w-full max-w-sm">
+                            <label for="password" class="label">
+                                <span class="label-text font-bold">Password</span>
+                            </label>
                             <input
-                                class="input-field"
-                                name="password"
                                 type="password"
+                                name="password"
+                                class="input input-primary w-full max-w-md {$registerErrors.password
+                                    ? 'input-error'
+                                    : 'input-bordered'}"
                                 placeholder="Enter your password"
                                 bind:value={$registerForm.password}
                             />
-                            {#if $registerErrors.password}
-                                <small>{$registerErrors.password}</small>
-                            {/if}
+                            <label for="password" class="label">
+                                {#if $registerErrors.password}
+                                    <span class="label-text-alt text-error"
+                                        >{$registerErrors.password}</span
+                                    >
+                                {/if}
+                            </label>
                         </div>
-                        <div class="input-container">
-                            <label for="confirmPassword">Confirm Password</label
-                            >
+                        <div class="form-control w-full max-w-sm">
+                            <label for="confirmPassword" class="label">
+                                <span class="label-text font-bold">Confirm Password</span>
+                            </label>
                             <input
-                                class="input-field"
-                                name="confirmPassword"
                                 type="password"
+                                name="confirmPassword"
+                                class="input input-primary w-full max-w-sm {$registerErrors.confirmPassword
+                                    ? 'input-error'
+                                    : 'input-bordered'}"
                                 placeholder="Confirm your password"
                                 bind:value={$registerForm.confirmPassword}
                             />
-                            {#if $registerErrors.confirmPassword}
-                                <small>{$registerErrors.confirmPassword}</small>
-                            {/if}
+                            <label for="confirmPassword" class="label">
+                                {#if $registerErrors.confirmPassword}
+                                    <span class="label-text-alt text-error"
+                                        >{$registerErrors.confirmPassword}</span
+                                    >
+                                {/if}
+                            </label>
                         </div>
-                        <button
-                            class="alt-button"
-                            on:click|preventDefault={() => (showModal = true)}
-                            >Login</button
-                        >
-                        <button type="submit">Register</button>
+                        <div class="flex justify-center mt-4 space-x-12">
+                            <button
+                                class="btn w-24"
+                                on:click|preventDefault={() =>
+                                    (showModal = true)}>Login</button
+                            >
+                            <button
+                                class="btn btn-primary w-24 text-white"
+                                type="submit">Register</button
+                            >
+                        </div>
                     </div>
                 </form>
             {/if}
         </div>
-    </div>
+        </div>
 </main>
-
-<style>
-    :root {
-        background-color: var(--background-color);
-    }
-    h2 {
-        margin-top: 0;
-    }
-
-    small {
-        color: #ff5861;
-    }
-
-    .remember-container {
-        display: flex;
-        align-items: start;
-        margin: 1em 0 2em 0;
-    }
-
-    .container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1em;
-        border-radius: 10px;
-        height: calc(100vh - 150px);
-
-    }
-
-    .picture {
-        display: inherit;
-        width: 50%;
-        height: inherit;
-        overflow: hidden;
-        border-radius: 10px 0px 0px 10px;
-        background-image: url(https://images.unsplash.com/photo-1606766923156-15fa276e8f07?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
-    }
-
-    .container-contents {
-        display: inherit;
-        width: 50%;
-        height: inherit;
-        background-color: #24242c;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 15px;
-        border-radius: 0px 10px 10px 0px;
-    }
-
-    /* Style the input container */
-    .input-container {
-        display: grid;
-        width: 100%;
-        margin-bottom: 1em;
-        border: none;
-    }
-
-    /* Style the input fields */
-    .input-field {
-        width: inherit;
-        padding: 1em;
-        outline: none;
-        border: none;
-        border-radius: 5px;
-    }
-
-    /* Style the login button */
-    button {
-        background-color: var(--primary-color);
-        border: none;
-        border-radius: 5px;
-        padding: 0.5em 1em;
-        font-size: 1em;
-        cursor: pointer;
-        color: var(--button-text-color);
-        width: 8em;
-    }
-
-    button:hover {
-        background-color: var(--hover-color);
-    }
-
-    .alt-button {
-        background: none;
-        border: 1px solid #a9a9a9;
-        border-radius: 5px;
-        padding: 0.5em 1em;
-        font-size: 1em;
-        cursor: pointer;
-        color: #a9a9a9;
-        width: 8em;
-    }
-    .alt-button:hover {
-        background: #a9a9a9;
-        color: white;
-    }
-</style>

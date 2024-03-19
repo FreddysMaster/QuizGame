@@ -19,8 +19,8 @@ export const load = (async ({ locals }) => {
 export const actions = {
   login: async ({ cookies, request }) => {
     const loginForm = await superValidate(request, zod(loginSchema));
-    console.log(loginForm);
 
+    console.log(loginForm)
     if (!loginForm.valid) return fail(400, { loginForm });
 
     const user = await prisma.users.findUnique({
@@ -83,10 +83,8 @@ export const actions = {
           password: await bcrypt.hash(registerForm.data.password, 10),
           userAuthToken: crypto.randomUUID(),
         },
-      })
-
-      redirect(302, "/");
-
+      }),
+      redirect(302, '/');
     } catch (err) {
       console.error(err);
       return fail(500, { message: "Could not create the user." })
