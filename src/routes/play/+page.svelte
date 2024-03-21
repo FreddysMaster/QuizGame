@@ -18,7 +18,7 @@
   let questions = data.questions;
   let categories = data.categories;
   console.log($selectedCategories);
-  let time = 99.0;
+  let time = 20.0;
   let currentQuestionIndex = 0;
   $score = 0;
   let answers = [];
@@ -98,7 +98,7 @@
           <h3 class="text-xl font-bold m-2 pl-2 text-white">Score: {$score}</h3>
           <div class="relative flex justify-center items-center">
             <h3
-              class="absolute text-xl font-bold rounded-full bg-white h-16 w-16 flex items-center justify-center bottom-0 shadow-inner text-black"
+              class="absolute text-xl font-bold rounded-full bg-white text-black border-3 border-black h-16 w-16 flex items-center justify-center bottom-0 shadow-inner "
             >
               {time}s
             </h3>

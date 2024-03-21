@@ -45,9 +45,11 @@
 <main>
   <div>
     <!-- Category Selection -->
-    <div class="h-[calc(100vh-8rem)] rounded-md m-8 p-4">
+    <div class="h-[calc(100vh-8rem)] rounded-md m-5 p-4">
       <div class="flex flex-col left-0 px-3">
-        <h1 class="text-center text-3xl m-5 font-bold text-black">Categories</h1>
+        <h1 class="text-center text-5xl font-bold text-black">The Big Quiz Game!</h1>
+        <h2 class="text-center text-3xl m-5 font-bold text-black">Here are your Categories:</h2>
+        <p class="text-center text-large font-bold text-black"> Click a category to keep their questions out of the game.</p>
         <div
           class="grid justify-items-center grid-cols-5 gap-8 gap-x-1 p-8 rounded-md"
         >
@@ -88,7 +90,7 @@
       </div>
 
       <!-- Start Button -->
-      <div class="text-center m-10">
+      <div class="text-center m-3">
         <a href="/play">
           <button class="btn btn-primary btn-wide text-white">Start Game</button
           >
@@ -96,4 +98,9 @@
       </div>
     </div>
   </div>
+  <style>
+    h1{
+      font-family: "Permanant Marker", cursive;
+    }
+  </style>
 </main>

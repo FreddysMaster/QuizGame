@@ -140,9 +140,6 @@
 </main>
 
 <style>
-    :root {
-        background-color: var(--background-color);
-    }
     h2 {
         margin-top: 0;
     }
