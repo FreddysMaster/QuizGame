@@ -21,10 +21,10 @@ export const colors = readable([
     "#e6d642", // Yellow
     "#f94e4e", // Red
     "#685af5", // Purple
-    "#3ce976", // Green
     "#307de7", // Blue
     "#a656fd", // Violet
     "#e857ed", // Pink
+    "#3ce976", // Green
     "#56cfef", // Light Blue
     "#4b0082", // Indigo
     "#ee3f73", // Hot Pink

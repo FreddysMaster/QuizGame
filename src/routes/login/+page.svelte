@@ -200,6 +200,7 @@
         outline: none;
         border: none;
         border-radius: 5px;
+        color: black;
     }
 
     /* Style the login button */

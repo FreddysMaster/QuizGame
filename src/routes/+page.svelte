@@ -6,7 +6,6 @@
   export let data;
   const { categories } = data;
   selectedCategories.set(categories);
-
   function handleCategoryChange(event) {
     const categoryId = parseInt(event.target.value, 10); // Parse the ID as an integer
 
@@ -92,10 +91,11 @@
       <!-- Start Button -->
       <div class="text-center m-3">
         <a href="/play">
-          <button class="btn btn-primary btn-wide text-white">Start Game</button
-          >
+          <button class="btn btn-primary btn-wide text-white">Start Game </button>
         </a>
       </div>
+
+
     </div>
   </div>
   <style>

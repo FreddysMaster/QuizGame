@@ -83,12 +83,13 @@
 </script>
 
 <main>
+  <a href="/">
+    <button class="btn btn-square m-2">
+      <Icon icon="mingcute:arrow-left-fill" width="2em" height="2em" />
+    </button>
+  </a>
   {#if questions.length > 0 && currentQuestionIndex < questions.length}
-    <a href="/">
-      <button class="btn btn-square m-2">
-        <Icon icon="mingcute:arrow-left-fill" width="2em" height="2em" />
-      </button>
-    </a>
+
 
     <div
       class="h-[calc(100vh-16rem)] w-screen flex flex-col justify-center items-center"
@@ -147,6 +148,8 @@
         {/if}
       </div>
     </div>
+  {:else}
+    <h2 class=" text-4xl text-black">No category selected. Go back with the arrow</h2>
   {/if}
 </main>
 
