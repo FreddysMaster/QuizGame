@@ -11,7 +11,7 @@
       if (points < $score) {
         points+=1;
       }
-    }, 1000);
+    }, 500);
   });
 </script>
 

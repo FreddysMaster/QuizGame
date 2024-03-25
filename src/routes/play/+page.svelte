@@ -149,6 +149,7 @@
       </div>
     </div>
   {:else}
+    {time = 9999999}
     <h2 class=" text-4xl text-black">No category selected. Go back with the arrow</h2>
   {/if}
 </main>
