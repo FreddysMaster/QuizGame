@@ -13,7 +13,7 @@
         <a href="/login" class="text-sm font-semibold leading-6 text-gray-900">Log in<span aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
-  {:else if $page.data.user}
+  {:else if $page.data.user.user_type === "user"}
     <div class="navbar bg-base-100">
       <div class="flex-1">
         <a class="btn btn-ghost text-xl text-black" href="/">Quiz Game</a>

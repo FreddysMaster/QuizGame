@@ -187,7 +187,8 @@
     width: 10em;
     left: 50%;
     transform: translateX(-50%);
-    margin-top: 3em;
+    margin-top: 2em;
+    margin-bottom: 5em;
     color: var(--button-text-color);
   }
 

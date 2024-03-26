@@ -49,3 +49,36 @@ export const registerSchema = z.object({
             });
         }
     });
+
+    export const QuestionSchema = z.object({
+        question: z
+            .string({ required_error: 'Question is required' })
+            .min(3, { message: 'Question must be at least 3 characters' })
+            .max(64, { message: 'Question must be less than 64 characters' })
+            .trim(),
+        answer1: z
+            .string({ required_error: 'Answer1 is required' })
+            .min(6, { message: 'Answer1 must be at least 6 characters' })
+            .max(99, { message: 'Answer1 must be less than 99 characters' })
+            .trim(),
+        answer2: z
+            .string({ required_error: 'Answer2 is required' })
+            .min(6, { message: 'Answer2 must be at least 6 characters' })
+            .max(99, { message: 'Answer2 must be less than 99 characters' })
+            .trim(),
+        answer3: z
+            .string({ required_error: 'Answer3 is required' })
+            .min(6, { message: 'Answer3 must be at least 6 characters' })
+            .max(99, { message: 'Answer3 must be less than 99 characters' })
+            .trim(),
+        answer4: z
+            .string({ required_error: 'Answer1 is required' })
+            .min(6, { message: 'Answer2 must be at least 6 characters' })
+            .max(99, { message: 'Answer3 must be less than 99 characters' })
+            .trim(),
+        category_id: z
+            .number({ required_error: 'Category Id is required' })
+            .min(1, { message: 'Category Id must be at least 6 characters' })
+            .max(10, { message: 'Category Id must be less than 99 characters' })
+            .trim()
+    });
